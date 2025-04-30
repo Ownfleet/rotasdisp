@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Rotas Disponíveis</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+    .rota { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; }
+    input, button { width: 100%; padding: 8px; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Rotas Disponíveis</h2>
+  <div id="lista-rotas">Carregando rotas...</div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbygAsgH7wlDIV4FBYqJLS3qu8wddvGdtRQz9eh5Dw_2MtQnHAbCUT7VyXoCVtDZNdQYeQ/exec"; // termina com /exec
+
+    async function carregarRotas() {
+      try {
+        const res = await fetch(scriptURL);
+        const rotas = await res.json();
+
+        const container = document.getElementById("lista-rotas");
+        container.innerHTML = "";
+
+        if (rotas.length === 0) {
+          container.innerHTML = "<p>Nenhuma rota disponível no momento.</p>";
+          return;
+        }
+
+        rotas.forEach(rota => {
+          const div = document.createElement("div");
+          div.className = "rota";
+          div.innerHTML = `
+            <p><strong>Rota:</strong> ${rota.rota}</p>
+            <p><strong>Região:</strong> ${rota.regiao}</p>
+            <form onsubmit="candidatar(event, '${rota.rota}')">
+              <input name="id" placeholder="Seu ID" required>
+              <input name="nome" placeholder="Seu nome completo" required>
+              <button type="submit">Quero essa rota</button>
+            </form>
+          `;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        document.getElementById("lista-rotas").innerHTML = "<p>Erro ao carregar rotas.</p>";
+      }
+    }
+
+    function candidatar(event, rotaID) {
+      event.preventDefault();
+      const form = event.target;
+      const id_motorista = form.id.value;
+      const nome_motorista = form.nome.value;
+
+      const formData = new FormData();
+      formData.append("rota", rotaID);
+      formData.append("id_motorista", id_motorista);
+      formData.append("nome_motorista", nome_motorista);
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => alert(msg))
+      .then(() => form.reset())
+      .catch(err => alert("Erro: " + err));
+    }
+
+    carregarRotas();
+  </script>
+</body>
+</html>
