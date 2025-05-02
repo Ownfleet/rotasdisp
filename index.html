@@ -155,7 +155,6 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      animation: fadeIn 0.3s ease-in-out;
     }
 
     .modal-content {
@@ -168,12 +167,6 @@
       font-size: 1.2rem;
       font-weight: bold;
       color: #ee4d2d;
-      animation: popIn 0.3s ease;
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
     }
 
     .modal-entrada {
@@ -196,7 +189,6 @@
       text-align: center;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       max-width: 90%;
-      animation: popIn 0.3s ease;
     }
 
     .modal-entrada-content h2 {
@@ -230,6 +222,7 @@
     .flex-linha {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 1rem;
     }
 
@@ -287,11 +280,11 @@
               divLista.innerHTML += `
                 <div class="rota-card">
                   <div class="flex-linha">
-                    <img src="shopito.png" alt="ícone" class="img-rota" />
                     <div>
                       <p><strong>Rota:</strong> ${rota.rota}</p>
                       <p><strong>Região:</strong> ${rota.regiao}</p>
                     </div>
+                    <img src="shopito.png" alt="ícone" class="img-rota" />
                   </div>
                   <label for="id_motorista_${index}">ID do motorista:</label>
                   <input type="text" id="id_motorista_${index}" placeholder="Digite seu ID" required>
