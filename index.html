@@ -15,7 +15,6 @@
       background-color: #fff7f5;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: #333;
-      transition: background-color 0.3s;
     }
 
     header {
@@ -228,13 +227,12 @@
 
     .img-rota {
       width: 60px;
-      height: auto;
-      border-radius: 8px;
+      height: 60px;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
-
   <div class="modal-entrada" id="modalEntrada">
     <div class="modal-entrada-content">
       <h2>⚠️ Atenção</h2>
@@ -260,7 +258,7 @@
   </div>
 
   <script>
-    const urlWebApp = "https://script.google.com/macros/s/AKfycbz9cUuojE-_dMHfkJoa7M8sHxbMzVIirw-WaagtHv7MRAx9fe4ZrbM-FYuvQ7nRfFZ8pA/exec";
+    const urlWebApp = "https://script.google.com/macros/s/YOUR_WEBAPP_URL/exec";
 
     function fecharAlertaEntrada() {
       document.getElementById("modalEntrada").style.display = "none";
@@ -284,7 +282,7 @@
                       <p><strong>Rota:</strong> ${rota.rota}</p>
                       <p><strong>Região:</strong> ${rota.regiao}</p>
                     </div>
-                    <img src="shopito.png" alt="ícone" class="img-rota" />
+                    <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzJ3NmVvN25pd3YzMHJid3l3NTZpc3Z1bWhzemJqcGozOXNtOWllayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/W02iWI8S6e79rpWMMH/giphy.gif" alt="pacote animado" class="img-rota" />
                   </div>
                   <label for="id_motorista_${index}">ID do motorista:</label>
                   <input type="text" id="id_motorista_${index}" placeholder="Digite seu ID" required>
