@@ -1,72 +1,362 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Rotas Disponíveis</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rotas Disponíveis - Shopee</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: auto; }
-    .rota { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; }
-    input, button { width: 100%; padding: 8px; margin-top: 5px; }
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #fff7f5;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      transition: background-color 0.3s;
+    }
+
+    header {
+      background-color: #ee4d2d;
+      color: #fff;
+      padding: 1.4rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .mensagem-alerta {
+      background-color: #fff2ef;
+      color: #b32400;
+      border: 1px solid #ee4d2d;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .botao-atualizar {
+      background-color: #ee4d2d;
+      color: white;
+      border: none;
+      padding: 0.9rem 1.2rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .botao-atualizar:hover {
+      background-color: #d63d23;
+      transform: translateY(-2px);
+    }
+
+    .rota-card {
+      background-color: #fff;
+      border: 1px solid #ffd5c6;
+      border-left: 6px solid #ee4d2d;
+      border-radius: 14px;
+      padding: 1.2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease;
+    }
+
+    .rota-card:hover {
+      transform: scale(1.01);
+    }
+
+    .rota-card p {
+      margin: 0.3rem 0;
+      font-size: 1rem;
+    }
+
+    .rota-card strong {
+      color: #ee4d2d;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #ee4d2d;
+      color: white;
+      padding: 0.8rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #d63d23;
+    }
+
+    .mensagem {
+      text-align: center;
+      margin-top: 2rem;
+      color: #888;
+      font-weight: bold;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content {
+      background-color: #ffffff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 90%;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ee4d2d;
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-entrada {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.65);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .modal-entrada-content {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 90%;
+      animation: popIn 0.3s ease;
+    }
+
+    .modal-entrada-content h2 {
+      font-size: 1.5rem;
+      color: #ee4d2d;
+      margin-bottom: 1rem;
+    }
+
+    .modal-entrada-content p {
+      color: #444;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-entrada-content button {
+      background-color: #ee4d2d;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .modal-entrada-content button:hover {
+      background-color: #d63d23;
+    }
+
+    .flex-linha {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .img-rota {
+      width: 60px;
+      height: auto;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
-  <h2>Rotas Disponíveis</h2>
-  <div id="lista-rotas">Carregando rotas...</div>
+
+  <div class="modal-entrada" id="modalEntrada">
+    <div class="modal-entrada-content">
+      <h2>⚠️ Atenção</h2>
+      <p>Só é permitido se candidatar em uma rota!</p>
+      <button onclick="fecharAlertaEntrada()">Estou ciente</button>
+    </div>
+  </div>
+
+  <header>Rotas Disponíveis - Shopee</header>
+
+  <div class="container">
+    <div id="mensagem-alerta" class="mensagem-alerta"></div>
+    <button class="botao-atualizar" onclick="carregarRotas()">🔄 Atualizar Rotas</button>
+    <div id="lista-rotas">
+      <p class="mensagem">Carregando rotas...</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-sucesso">
+    <div class="modal-content">
+      ✅ Candidatura registrada com sucesso!
+    </div>
+  </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbygAsgH7wlDIV4FBYqJLS3qu8wddvGdtRQz9eh5Dw_2MtQnHAbCUT7VyXoCVtDZNdQYeQ/exec"; // termina com /exec
+    const urlWebApp = "https://script.google.com/macros/s/AKfycbz9cUuojE-_dMHfkJoa7M8sHxbMzVIirw-WaagtHv7MRAx9fe4ZrbM-FYuvQ7nRfFZ8pA/exec";
 
-    async function carregarRotas() {
-      try {
-        const res = await fetch(scriptURL);
-        const rotas = await res.json();
+    function fecharAlertaEntrada() {
+      document.getElementById("modalEntrada").style.display = "none";
+    }
 
-        const container = document.getElementById("lista-rotas");
-        container.innerHTML = "";
+    function carregarRotas() {
+      fetch(urlWebApp)
+        .then(response => response.json())
+        .then(rotas => {
+          const divLista = document.getElementById("lista-rotas");
+          divLista.innerHTML = "";
 
-        if (rotas.length === 0) {
-          container.innerHTML = "<p>Nenhuma rota disponível no momento.</p>";
-          return;
-        }
+          if (rotas.length === 0) {
+            divLista.innerHTML = `<p class="mensagem">Não há rotas disponíveis no momento.</p>`;
+          } else {
+            rotas.forEach((rota, index) => {
+              divLista.innerHTML += `
+                <div class="rota-card">
+                  <div class="flex-linha">
+                    <img src="shopito.png" alt="ícone" class="img-rota" />
+                    <div>
+                      <p><strong>Rota:</strong> ${rota.rota}</p>
+                      <p><strong>Região:</strong> ${rota.regiao}</p>
+                    </div>
+                  </div>
+                  <label for="id_motorista_${index}">ID do motorista:</label>
+                  <input type="text" id="id_motorista_${index}" placeholder="Digite seu ID" required>
 
-        rotas.forEach(rota => {
-          const div = document.createElement("div");
-          div.className = "rota";
-          div.innerHTML = `
-            <p><strong>Rota:</strong> ${rota.rota}</p>
-            <p><strong>Região:</strong> ${rota.regiao}</p>
-            <form onsubmit="candidatar(event, '${rota.rota}')">
-              <input name="id" placeholder="Seu ID" required>
-              <input name="nome" placeholder="Seu nome completo" required>
-              <button type="submit">Quero essa rota</button>
-            </form>
-          `;
-          container.appendChild(div);
+                  <label for="nome_motorista_${index}">Nome do motorista:</label>
+                  <input type="text" id="nome_motorista_${index}" placeholder="Digite seu nome" required>
+
+                  <button onclick="candidatar('${rota.rota}', '${rota.regiao}', ${index})">Candidatar-se</button>
+                </div>
+              `;
+            });
+          }
+        })
+        .catch(error => {
+          document.getElementById("lista-rotas").innerHTML =
+            `<p class="mensagem">Erro ao carregar rotas. Tente novamente mais tarde.</p>`;
+          console.error(error);
         });
-      } catch (error) {
-        document.getElementById("lista-rotas").innerHTML = "<p>Erro ao carregar rotas.</p>";
+    }
+
+    function mostrarAlerta(mensagem) {
+      if (mensagem.includes("registrada")) {
+        document.getElementById("modal-sucesso").style.display = "flex";
+        setTimeout(() => {
+          document.getElementById("modal-sucesso").style.display = "none";
+        }, 3000);
+      } else {
+        const alerta = document.getElementById("mensagem-alerta");
+        alerta.textContent = mensagem;
+        alerta.style.display = "block";
+        setTimeout(() => {
+          alerta.style.display = "none";
+        }, 5000);
       }
     }
 
-    function candidatar(event, rotaID) {
-      event.preventDefault();
-      const form = event.target;
-      const id_motorista = form.id.value;
-      const nome_motorista = form.nome.value;
+    function candidatar(rota, regiao, index) {
+      const id = document.getElementById(`id_motorista_${index}`).value.trim();
+      const nome = document.getElementById(`nome_motorista_${index}`).value.trim();
+
+      if (!id || !nome) {
+        mostrarAlerta("Preencha seu ID e nome corretamente antes de se candidatar.");
+        return;
+      }
 
       const formData = new FormData();
-      formData.append("rota", rotaID);
-      formData.append("id_motorista", id_motorista);
-      formData.append("nome_motorista", nome_motorista);
+      formData.append("rota", rota);
+      formData.append("regiao", regiao);
+      formData.append("id_motorista", id);
+      formData.append("nome_motorista", nome);
 
-      fetch(scriptURL, {
+      fetch(urlWebApp, {
         method: "POST",
         body: formData
       })
-      .then(res => res.text())
-      .then(msg => alert(msg))
-      .then(() => form.reset())
-      .catch(err => alert("Erro: " + err));
+        .then(response => response.text())
+        .then(texto => {
+          mostrarAlerta(texto.trim());
+          if (texto.includes("registrada")) {
+            carregarRotas();
+          }
+        })
+        .catch(() => {
+          mostrarAlerta("Erro ao enviar candidatura.");
+        });
     }
 
     carregarRotas();
