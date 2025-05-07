@@ -5,231 +5,164 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rotas Disponíveis - Shopee</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background-color: #fff7f5;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: #333;
       transition: background-color 0.3s;
     }
-
     header {
-      background-color: #ee4d2d;
-      color: #fff;
-      padding: 1.4rem;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: bold;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      background-color: #ee4d2d; color: #fff;
+      padding: 1.4rem; text-align: center;
+      font-size: 1.8rem; font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      position: sticky; top: 0; z-index: 1000;
     }
-
     .container {
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 1.5rem;
-      background: #ffffff;
+      max-width: 700px; margin: 2rem auto;
+      padding: 1.5rem; background: #fff;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-
     .mensagem-alerta {
-      background-color: #fff2ef;
-      color: #b32400;
-      border: 1px solid #ee4d2d;
-      padding: 1rem;
-      margin-bottom: 1.2rem;
-      border-radius: 8px;
-      font-weight: bold;
-      text-align: center;
-      display: none;
-      animation: fadeIn 0.3s ease-in-out;
+      background-color: #fff2ef; color: #b32400;
+      border: 1px solid #ee4d2d; padding: 1rem;
+      margin-bottom: 1.2rem; border-radius: 8px;
+      font-weight: bold; text-align: center;
+      display: none; animation: fadeIn 0.3s ease-in-out;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-
     .botao-atualizar {
-      background-color: #ee4d2d;
-      color: white;
-      border: none;
-      padding: 0.9rem 1.2rem;
-      font-weight: bold;
-      font-size: 1.1rem;
-      border-radius: 12px;
-      cursor: pointer;
-      margin-bottom: 1.5rem;
-      width: 100%;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #ee4d2d; color: #fff;
+      border: none; padding: 0.9rem 1.2rem;
+      font-weight: bold; font-size: 1.1rem;
+      border-radius: 12px; cursor: pointer;
+      margin-bottom: 1.5rem; width: 100%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       transition: background-color 0.2s, transform 0.2s;
     }
-
     .botao-atualizar:hover {
-      background-color: #d63d23;
-      transform: translateY(-2px);
+      background-color: #d63d23; transform: translateY(-2px);
     }
-
+    .mensagem-loading {
+      display: none;
+      background-color: #fff176; color: #f57f17;
+      padding: 0.8rem; border-radius: 8px;
+      font-weight: bold; margin-bottom: 1rem;
+      text-align: center; display: flex;
+      align-items: center; justify-content: center;
+      gap: 0.5rem;
+    }
+    .loading-spinner {
+      width: 20px; height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #f57f17;
+      border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     .rota-card {
       background-color: #fff;
       border: 1px solid #ffd5c6;
       border-left: 6px solid #ee4d2d;
-      border-radius: 14px;
-      padding: 1.2rem;
+      border-radius: 14px; padding: 1.2rem;
       margin-bottom: 1.8rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       transition: transform 0.2s ease;
     }
-
-    .rota-card:hover {
-      transform: scale(1.01);
-    }
-
-    .rota-card p {
-      margin: 0.3rem 0;
-      font-size: 1rem;
-    }
-
-    .rota-card strong {
-      color: #ee4d2d;
-    }
-
+    .rota-card:hover { transform: scale(1.01); }
+    .rota-card p { margin: 0.3rem 0; font-size: 1rem; }
+    .rota-card strong { color: #ee4d2d; }
     label {
-      font-weight: bold;
-      margin-top: 1rem;
-      display: block;
-      font-size: 0.95rem;
+      font-weight: bold; margin-top: 1rem;
+      display: block; font-size: 0.95rem;
     }
-
     input[type="text"] {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      margin-bottom: 0.8rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      width: 100%; padding: 0.6rem;
+      margin: 0.3rem 0 0.8rem;
+      border: 1px solid #ccc; border-radius: 6px;
       font-size: 1rem;
     }
-
     button {
-      background-color: #ee4d2d;
-      color: white;
-      padding: 0.8rem 1.2rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      width: 100%;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      margin-top: 0.5rem;
+      background-color: #ee4d2d; color: #fff;
+      padding: 0.8rem 1.2rem; border: none;
+      border-radius: 8px; font-size: 1rem;
+      font-weight: bold; width: 100%; cursor: pointer;
+      transition: background-color 0.2s; margin-top: 0.5rem;
     }
-
-    button:hover {
-      background-color: #d63d23;
-    }
-
+    button:hover { background-color: #d63d23; }
     .mensagem {
-      text-align: center;
-      margin-top: 2rem;
-      color: #888;
-      font-weight: bold;
+      text-align: center; margin-top: 2rem;
+      color: #888; font-weight: bold;
     }
-
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: fixed; top: 0; left: 0;
+      right: 0; bottom: 0;
       background-color: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
+      display: none; justify-content: center;
+      align-items: center; z-index: 9999;
     }
-
     .modal-content {
-      background-color: #ffffff;
-      padding: 2rem 2.5rem;
-      border-radius: 12px;
+      background-color: #fff;
+      padding: 2rem 2.5rem; border-radius: 12px;
       text-align: center;
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      max-width: 90%;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #ee4d2d;
+      max-width: 90%; font-size: 1.2rem;
+      font-weight: bold; color: #ee4d2d;
     }
-
+    .toast {
+      position: fixed; bottom: 1rem; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8); color: #fff;
+      padding: 0.6rem 1rem; border-radius: 6px;
+      font-size: 0.9rem; opacity: 0;
+      transition: opacity 0.3s ease; z-index: 1001;
+    }
+    .toast.show { opacity: 1; }
     .modal-entrada {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.65);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.65);
+      display: flex; justify-content: center; align-items: center;
       z-index: 10000;
     }
-
     .modal-entrada-content {
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      max-width: 90%;
+      background-color: #fff; padding: 2rem;
+      border-radius: 16px; max-width: 90%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: left;
     }
-
     .modal-entrada-content h2 {
-      font-size: 1.5rem;
-      color: #ee4d2d;
-      margin-bottom: 1rem;
+      margin: 0 0 1rem; font-size: 1.6rem;
+      color: #ee4d2d; text-align: center;
     }
-
     .modal-entrada-content p {
-      color: #444;
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
+      margin: 0.8rem 0; font-size: 1.1rem;
+      line-height: 1.5; color: #333;
     }
-
     .modal-entrada-content button {
-      background-color: #ee4d2d;
-      color: white;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
+      display: block; margin: 1.5rem auto 0;
+      background-color: #ee4d2d; color: #fff;
+      border: none; padding: 0.8rem 1.5rem;
+      font-size: 1rem; font-weight: bold;
+      border-radius: 10px; cursor: pointer;
       transition: background-color 0.2s;
     }
-
     .modal-entrada-content button:hover {
       background-color: #d63d23;
     }
-
     .flex-linha {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
     }
-
     .img-rota {
-      width: 60px;
-      height: auto;
-      border-radius: 8px;
+      width: 60px; height: auto; border-radius: 8px;
     }
   </style>
 </head>
@@ -237,8 +170,9 @@
 
   <div class="modal-entrada" id="modalEntrada">
     <div class="modal-entrada-content">
-      <h2>⚠️ Atenção</h2>
-      <p>Só é permitido se candidatar em uma rota!</p>
+      <h2>ℹ️ Informativo</h2>
+      <p>Se o analista informar que há uma rota disponível e, ao acessar o site, nenhuma rota for exibida, significa que outra pessoa a preencheu antes de você.</p>
+      <p>Mas, se duas ou mais pessoas tentarem preencher a mesma rota quase simultaneamente, ela será atribuída de acordo com o horário de envio da sua solicitação.</p>
       <button onclick="fecharAlertaEntrada()">Estou ciente</button>
     </div>
   </div>
@@ -248,6 +182,10 @@
   <div class="container">
     <div id="mensagem-alerta" class="mensagem-alerta"></div>
     <button class="botao-atualizar" onclick="carregarRotas()">🔄 Atualizar Rotas</button>
+    <div id="loading" class="mensagem-loading">
+      <span class="loading-spinner"></span>
+      <span>Atualizando, por favor não preencha nada na atualização…</span>
+    </div>
     <div id="lista-rotas">
       <p class="mensagem">Carregando rotas...</p>
     </div>
@@ -259,6 +197,8 @@
     </div>
   </div>
 
+  <div id="toast" class="toast">Esta página atualiza a cada 30 segundos</div>
+
   <script>
     const urlWebApp = "https://script.google.com/macros/s/AKfycbz9cUuojE-_dMHfkJoa7M8sHxbMzVIirw-WaagtHv7MRAx9fe4ZrbM-FYuvQ7nRfFZ8pA/exec";
 
@@ -266,93 +206,95 @@
       document.getElementById("modalEntrada").style.display = "none";
     }
 
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
     function carregarRotas() {
+      showToast("Esta página atualiza a cada 30 segundos");
+      const loading = document.getElementById("loading");
+      loading.style.display = "flex";
+
       fetch(urlWebApp)
-        .then(response => response.json())
+        .then(res => res.json())
         .then(rotas => {
-          const divLista = document.getElementById("lista-rotas");
-          divLista.innerHTML = "";
-
+          const div = document.getElementById("lista-rotas");
+          div.innerHTML = "";
           if (rotas.length === 0) {
-            divLista.innerHTML = `<p class="mensagem">Não há rotas disponíveis no momento.</p>`;
-          } else {
-            rotas.forEach((rota, index) => {
-              divLista.innerHTML += `
-                <div class="rota-card">
-                  <div class="flex-linha">
-                    <div>
-                      <p><strong>Rota:</strong> ${rota.rota}</p>
-                      <p><strong>Região:</strong> ${rota.regiao}</p>
-                    </div>
-                    <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzJ3NmVvN25pd3YzMHJid3l3NTZpc3Z1bWhzemJqcGozOXNtOWllayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/W02iWI8S6e79rpWMMH/giphy.gif" alt="ícone" class="img-rota" />
-                  </div>
-                  <label for="id_motorista_${index}">ID do motorista:</label>
-                  <input type="text" id="id_motorista_${index}" placeholder="Digite seu ID" required>
-
-                  <label for="nome_motorista_${index}">Nome do motorista:</label>
-                  <input type="text" id="nome_motorista_${index}" placeholder="Digite seu nome" required>
-
-                  <button onclick="candidatar('${rota.rota}', '${rota.regiao}', ${index})">Candidatar-se</button>
-                </div>
-              `;
-            });
+            div.innerHTML = `<p class="mensagem">Não há rotas disponíveis no momento.</p>`;
+            return;
           }
+          rotas.forEach((r, i) => {
+            div.innerHTML += `
+              <div class="rota-card">
+                <div class="flex-linha">
+                  <div>
+                    <p><strong>Rota:</strong> ${r.rota}</p>
+                    <p><strong>Região:</strong> ${r.regiao}</p>
+                  </div>
+                  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzJ3NmVvN25pd3YzMHJid3l3NTZpc3Z1bWhzemJqcGozOXNtOWllayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/W02iWI8S6e79rpWMMH/giphy.gif"
+                       alt="ícone" class="img-rota" />
+                </div>
+                <label for="id_motorista_${i}">ID do motorista:</label>
+                <input type="text" id="id_motorista_${i}" placeholder="Digite seu ID" required>
+                <label for="nome_motorista_${i}">Nome do motorista:</label>
+                <input type="text" id="nome_motorista_${i}" placeholder="Digite seu nome" required>
+                <button onclick="candidatar('${r.rota}', '${r.regiao}', ${i})">Candidatar-se</button>
+              </div>
+            `;
+          });
         })
-        .catch(error => {
+        .catch(err => {
           document.getElementById("lista-rotas").innerHTML =
             `<p class="mensagem">Erro ao carregar rotas. Tente novamente mais tarde.</p>`;
-          console.error(error);
+          console.error(err);
+        })
+        .finally(() => {
+          document.getElementById("loading").style.display = "none";
         });
     }
 
-    function mostrarAlerta(mensagem) {
-      if (mensagem.includes("registrada")) {
+    function mostrarAlerta(msg) {
+      if (msg.includes("sucesso")) {
         document.getElementById("modal-sucesso").style.display = "flex";
         setTimeout(() => {
           document.getElementById("modal-sucesso").style.display = "none";
         }, 3000);
       } else {
         const alerta = document.getElementById("mensagem-alerta");
-        alerta.textContent = mensagem;
+        alerta.textContent = msg;
         alerta.style.display = "block";
-        setTimeout(() => {
-          alerta.style.display = "none";
-        }, 5000);
+        setTimeout(() => alerta.style.display = "none", 5000);
       }
     }
 
-    function candidatar(rota, regiao, index) {
-      const id = document.getElementById(`id_motorista_${index}`).value.trim();
-      const nome = document.getElementById(`nome_motorista_${index}`).value.trim();
-
+    function candidatar(rota, regiao, idx) {
+      const id = document.getElementById(`id_motorista_${idx}`).value.trim();
+      const nome = document.getElementById(`nome_motorista_${idx}`).value.trim();
       if (!id || !nome) {
         mostrarAlerta("Preencha seu ID e nome corretamente antes de se candidatar.");
         return;
       }
-
       const formData = new FormData();
       formData.append("rota", rota);
       formData.append("regiao", regiao);
       formData.append("id_motorista", id);
       formData.append("nome_motorista", nome);
 
-      fetch(urlWebApp, {
-        method: "POST",
-        body: formData
-      })
-        .then(response => response.text())
-        .then(texto => {
-          mostrarAlerta(texto.trim());
-          if (texto.includes("registrada")) {
-            carregarRotas();
-          }
+      fetch(urlWebApp, { method: "POST", body: formData })
+        .then(res => res.text())
+        .then(txt => {
+          mostrarAlerta(txt.trim());
+          if (txt.includes("sucesso")) carregarRotas();
         })
-        .catch(() => {
-          mostrarAlerta("Erro ao enviar candidatura.");
-        });
+        .catch(() => mostrarAlerta("Erro ao enviar candidatura."));
     }
 
     carregarRotas();
+    setInterval(carregarRotas, 30000);
   </script>
 </body>
 </html>
