@@ -168,6 +168,7 @@
 </head>
 <body>
 
+  <!-- Informativo de entrada -->
   <div class="modal-entrada" id="modalEntrada">
     <div class="modal-entrada-content">
       <h2>ℹ️ Informativo</h2>
@@ -214,7 +215,7 @@
     }
 
     function carregarRotas() {
-      showToast("Esta página atualiza a cada 30 segundos");
+      showToast("Esta página atualiza a cada 60 segundos");
       const loading = document.getElementById("loading");
       loading.style.display = "flex";
 
@@ -242,7 +243,9 @@
                 <input type="text" id="id_motorista_${i}" placeholder="Digite seu ID" required>
                 <label for="nome_motorista_${i}">Nome do motorista:</label>
                 <input type="text" id="nome_motorista_${i}" placeholder="Digite seu nome" required>
-                <button onclick="candidatar('${r.rota}', '${r.regiao}', ${i})">Candidatar-se</button>
+                <button onclick="this.disabled=true; candidatar('${r.rota}', '${r.regiao}', ${i})">
+                  Candidatar-se
+                </button>
               </div>
             `;
           });
@@ -272,12 +275,14 @@
     }
 
     function candidatar(rota, regiao, idx) {
-      const id = document.getElementById(`id_motorista_${idx}`).value.trim();
+      const id   = document.getElementById(`id_motorista_${idx}`).value.trim();
       const nome = document.getElementById(`nome_motorista_${idx}`).value.trim();
+
       if (!id || !nome) {
         mostrarAlerta("Preencha seu ID e nome corretamente antes de se candidatar.");
         return;
       }
+
       const formData = new FormData();
       formData.append("rota", rota);
       formData.append("regiao", regiao);
@@ -293,6 +298,7 @@
         .catch(() => mostrarAlerta("Erro ao enviar candidatura."));
     }
 
+    // inicia e repete a cada 60 segundos
     carregarRotas();
     setInterval(carregarRotas, 60000);
   </script>
