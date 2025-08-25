@@ -310,12 +310,26 @@ document.addEventListener("click",(e)=>{
   }
 });
 
-/* ===== Login (modal) ===== */
+/* ===== Login (modal) — sem sugestões do navegador ===== */
 function openLogin(){
   openModal("Entrar como admin", `
-    <form id="formLogin">
-      <div class="field"><label>E-mail</label>
-        <input id="email" type="email" placeholder="seuemail@dominio.com" required>
+    <form id="formLogin" autocomplete="off">
+      <div class="field">
+        <label>E-mail</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="seuemail@dominio.com"
+          required
+          name="nope"                 /* evita histórico salvo */
+          autocomplete="off"          /* desativa autocomplete */
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="email"
+          readonly                    /* bloqueia o dropdown de sugestões */
+          onfocus="this.removeAttribute('readonly');"  /* libera a digitação no foco */
+        >
       </div>
     </form>
   `, [
