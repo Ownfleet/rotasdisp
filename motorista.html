@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Rotas disponíveis</title>
+
+<style>
+  /* ========= Design tokens (Shopee vibe) ========= */
+  :root{
+    --brand:#EE4D2D;
+    --brand-2:#FF6A3C;
+    --bg:#F7F7F8;
+    --card:#FFFFFF;
+    --txt:#0F172A;          /* slate-900 */
+    --muted:#64748B;        /* slate-500 */
+    --line:#E2E8F0;         /* slate-200 */
+    --radius:16px;
+    --radius-lg:20px;
+    --shadow:0 10px 28px rgba(17,24,39,.08);
+    --shadow-soft:0 6px 18px rgba(17,24,39,.06);
+    --focus-ring:0 0 0 3px rgba(238,77,45,.28);
+    --trans:.18s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+    color:var(--txt);
+    background:
+      radial-gradient(1200px 600px at 100% -10%, rgba(255,106,60,.08), transparent 60%),
+      radial-gradient(900px 400px at -10% 0%, rgba(238,77,45,.06), transparent 55%),
+      var(--bg);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+
+  /* ========= Topbar ========= */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(90deg,var(--brand),var(--brand-2));
+    color:#fff;
+    padding:14px 0;
+    box-shadow:var(--shadow);
+    border-bottom:1px solid rgba(255,255,255,.2);
+  }
+  .topbar__inner{
+    max-width:1100px; margin:0 auto; padding:0 16px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+
+  .brand{
+    display:flex; align-items:center; gap:12px;
+  }
+  .brand__logo{
+    width:40px; height:40px; border-radius:12px;
+    background:#fff; display:grid; place-items:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+  }
+  .brand__title{
+    font-weight:900; font-size:1.1rem; letter-spacing:.2px;
+  }
+
+  /* ========= Layout ========= */
+  .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
+  .grid{
+    display:grid; gap:16px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+
+  /* ========= Cards ========= */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-soft);
+    padding:18px;
+    display:flex; flex-direction:column; gap:12px;
+    transition:transform var(--trans), box-shadow var(--trans), border-color var(--trans);
+  }
+  .card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 26px rgba(17,24,39,.10);
+    border-color:#dbe3ef;
+  }
+  .title{font-size:1.05rem;font-weight:900}
+  .sub{color:var(--muted);font-size:.95rem}
+
+  /* Destaque da última rota do usuário */
+  .mine{ outline:3px solid rgba(18,185,129,.28); outline-offset:2px }
+
+  /* ========= Chips ========= */
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:6px 12px; border-radius:999px; font-size:.82rem; font-weight:800;
+    border:1px solid transparent;
+  }
+  .chip--ok{ background:#EFFFF7; color:#066E4A; border-color:#BAEBD8 }
+  .chip--busy{ background:#FFEDEB; color:#842016; border-color:#FFD3CB }
+  .chip--warn{ background:#FFF7E6; color:#7A4E00; border-color:#FFE0A6 }
+
+  /* ========= Botões ========= */
+  .btn{
+    --btn-shadow:0 10px 22px rgba(238,77,45,.28);
+    padding:12px 14px;
+    border-radius:12px; border:1px solid transparent;
+    background:linear-gradient(180deg,var(--brand),var(--brand-2));
+    color:#fff; cursor:pointer; font-weight:900; letter-spacing:.2px;
+    box-shadow:var(--btn-shadow);
+    transition:transform var(--trans), filter var(--trans), box-shadow var(--trans);
+  }
+  .btn:hover{ filter:brightness(.98); transform:translateY(-1px) }
+  .btn:active{ transform:translateY(0) scale(.99) }
+  .btn:focus-visible{ outline:none; box-shadow:var(--btn-shadow), var(--focus-ring) }
+  .btn[disabled]{ opacity:.55; cursor:not-allowed; filter:saturate(.6); box-shadow:none }
+
+  /* ========= Modal ========= */
+  .overlay{
+    position:fixed; inset:0; background:rgba(15,23,42,.55);
+    display:none; align-items:center; justify-content:center; padding:16px;
+    backdrop-filter:saturate(140%) blur(2px);
+  }
+  .modal{
+    width:100%; max-width:560px; background:#fff; border-radius:18px;
+    box-shadow:0 18px 42px rgba(2,6,23,.22); border:1px solid #E6EAF2; overflow:hidden;
+    transform:translateY(8px) scale(.98); opacity:0;
+    transition:transform .22s ease, opacity .22s ease;
+  }
+  .overlay[style*="display: flex"] .modal{ transform:translateY(0) scale(1); opacity:1 }
+
+  .modal__hd{ padding:16px 18px; background:#FFF1EC; border-bottom:1px solid #E6EAF2; font-weight:900 }
+  .modal__bd{ padding:18px }
+  .modal__ft{ padding:14px 18px; border-top:1px solid #E6EAF2; display:flex; gap:10px; justify-content:flex-end; background:#FAFAFA }
+  .close-x{
+    position:absolute; right:18px; top:16px; background:transparent; border:none; font-size:22px; cursor:pointer; line-height:1;
+    color:#d04b2e;
+  }
+  .close-x:focus-visible{ outline:none; box-shadow:var(--focus-ring) }
+
+  /* ========= Form fields ========= */
+  .field{ display:flex; flex-direction:column; gap:6px; margin:10px 0 }
+  .field label{ font-weight:700; font-size:.92rem }
+  .field input{
+    padding:12px 14px; border:1px solid var(--line); border-radius:12px; font:inherit; background:#fff;
+    transition:border-color var(--trans), box-shadow var(--trans);
+  }
+  .field input::placeholder{ color:#9AA6B2 }
+  .field input:focus{ box-shadow:var(--focus-ring); border-color:var(--brand-2); outline:none }
+
+  /* ========= Acessibilidade leve ========= */
+  @media (prefers-reduced-motion: reduce){
+    .card,.btn,.modal{ transition:none }
+  }
+</style>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+/* ====== Supabase ====== */
+const SUPABASE_URL = "https://ypjnykfdtmeovsjctbcu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlwam55a2ZkdG1lb3ZzamN0YmN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0NDEyNzksImV4cCI6MjA3MTAxNzI3OX0.h-0z7-ZZWhZihyd4NahEhFtj3FnndTpwbB5-W33P5w4";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth:{ persistSession:false } });
+
+/* ====== Elements ====== */
+const list = document.querySelector("#list");
+
+/* ====== Modal genérico ====== */
+const overlay = document.querySelector("#overlay");
+const mTitle  = document.querySelector("#modalTitle");
+const mBody   = document.querySelector("#modalBody");
+const mFoot   = document.querySelector("#modalFoot");
+let actionsMap = {};
+
+function closeModal(){
+  overlay.style.display = "none";
+  mTitle.textContent = "";
+  mBody.innerHTML = "";
+  mFoot.innerHTML = "";
+  actionsMap = {};
+}
+function openModal(title, html, actions=[{label:"Fechar",id:"close"}]){
+  mTitle.textContent = title;
+  mBody.innerHTML = html;
+  mFoot.innerHTML = actions.map((a,i)=>`<button class="btn" data-act="${a.id||i}">${a.label}</button>`).join("");
+  overlay.style.display = "flex";
+  actions.forEach((a,i)=>{ actionsMap[a.id||i] = a.onClick || closeModal; });
+}
+mFoot.addEventListener("click",(e)=>{
+  const b=e.target.closest("button[data-act]");
+  if(!b) return;
+  const fn = actionsMap[b.dataset.act];
+  if(fn) fn();
+});
+document.querySelector("#modalClose").addEventListener("click", closeModal);
+
+/* ====== Lógica de rotas ====== */
+let myLastClaim = null;
+
+async function listRotas(){
+  const { data, error } = await supabase
+    .from("rotas")
+    .select("id,label,regiao,status,driver_id,driver_nome,claimed_at")
+    .order("created_at",{ascending:false});
+  if(error){
+    openModal("Erro", `<p>${error.message}</p>`);
+    return;
+  }
+  render(data || []);
+}
+
+function render(rows){
+  list.innerHTML = rows.map(r=>{
+    const disponivel = r.status==="disponivel";
+    const jaPegou    = r.status==="pegou";
+    const me         = (myLastClaim && myLastClaim===r.id);
+
+    return `
+      <div class="card ${me?'mine':''}">
+        <div class="title">Rota: ${r.label}</div>
+        <div class="sub">Região: ${r.regiao}</div>
+
+        <div>
+          ${
+            disponivel
+              ? `<span class="chip chip--ok">Disponível</span>`
+              : jaPegou
+                ? `<span class="chip chip--busy">Rota repassada</span>`
+                : `<span class="chip chip--warn">Indisponível</span>`
+          }
+        </div>
+
+        ${
+          disponivel ? `
+            <button class="btn" data-action="claim"
+                    data-id="${r.id}" data-label="${r.label}" data-regiao="${r.regiao}">
+              Pegar
+            </button>
+            <div class="sub" style="margin-top:6px">
+              ⚠️ Você só pode se candidatar a <b>uma</b> rota por vez.
+            </div>
+          ` : ``
+        }
+      </div>`;
+  }).join("");
+}
+
+/* Abrir modal de claim */
+document.addEventListener("click",(e)=>{
+  const btn = e.target.closest('button[data-action="claim"]');
+  if(!btn) return;
+
+  const rotaId    = btn.dataset.id;
+  const rotaLabel = btn.dataset.label;
+  const rotaRegiao= btn.dataset.regiao;
+
+  openModal(`Pegar rota ${rotaLabel}`, `
+    <form id="claimForm" onsubmit="return false">
+      <div class="field">
+        <label>Seu ID</label>
+        <input name="driver_id" placeholder="Digite seu ID" required inputmode="numeric" autocomplete="off">
+      </div>
+    </form>
+    <small class="sub">Região: ${rotaRegiao}</small>
+  `, [
+    {label:"Cancelar", id:"close"},
+    {label:"Confirmar", id:"doClaim", onClick: async ()=>{
+      const form = document.querySelector("#claimForm");
+      const driverId = (form.driver_id.value||"").trim();
+      if(!driverId){ form.driver_id.focus(); return; }
+
+      const { data, error } = await supabase.rpc("claim_rota",{ p_rota_id: rotaId, p_driver_id: driverId });
+
+      // Mensagem amigável se já tiver outra rota
+      if(error){
+        closeModal();
+        const jaTem = error.code === "23505" || (error.message||"").includes("uniq_rotas_driver_ativo");
+        openModal("Aviso", `<p>${
+          jaTem
+            ? "Você só pode se candidatar a uma rota por vez. Finalize/libere a atual com o analista para pegar outra."
+            : (error.message || "Ocorreu um erro.")
+        }</p>`);
+        return;
+      }
+
+      const resp = (data && data[0]) || data;
+      closeModal();
+
+      if(resp?.ok){
+        myLastClaim = resp.rota_id;
+        openModal("Tudo certo!", `<p>Você pegou a rota <b>${resp.rota_label}</b> (${resp.rota_regiao}). Avise o analista.</p>`);
+        await listRotas();
+      }else{
+        openModal("Aviso", `<p>${
+          resp?.mensagem || "Você só pode se candidatar a uma rota por vez. Finalize/libere a atual com o analista para pegar outra."
+        }</p>`);
+      }
+    }}
+  ]);
+});
+
+/* Canal em tempo real */
+async function main(){
+  await listRotas();
+  supabase
+    .channel("rotas-live")
+    .on("postgres_changes", { event:"*", schema:"public", table:"rotas" }, listRotas)
+    .subscribe();
+}
+main();
+</script>
+</head>
+
+<body>
+  <header class="topbar" role="banner">
+    <div class="topbar__inner">
+      <div class="brand" aria-label="Shopee">
+        <div class="brand__logo" aria-hidden="true">
+          <!-- Logo Shopee (bag icon) -->
+          <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#EE4D2D"/>
+                <stop offset="1" stop-color="#FF6A3C"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="48" height="48" rx="12" fill="url(#g)"></rect>
+            <path fill="#fff" d="M15 20.8c0-1.21.98-2.2 2.2-2.2h13.6c1.21 0 2.2.99 2.2 2.2V33c0 1.66-1.34 3-3 3H18c-1.66 0-3-1.34-3-3V20.8zm6.5-5.1a2.5 2.5 0 015 0v1.3h2.5v-1.3a5 5 0 10-10 0v1.3H21.5v-1.3z"></path>
+            <path fill="#fff" d="M26.8 27.2c-1.98-.62-3.1-1.48-3.1-3.08 0-1.86 1.55-3.22 3.94-3.22 1.46 0 2.7.44 3.65 1.25l-1.26 1.7c-.82-.66-1.74-1-2.56-1-.92 0-1.49.44-1.49 1.02 0 .68.54 1.03 1.97 1.49 2.2.7 3.38 1.6 3.38 3.29 0 2.01-1.66 3.33-4.14 3.33-1.64 0-3.14-.53-4.23-1.52l1.35-1.63c.95.82 2 .12 2.88.12 1.02 0 1.63-.44 1.63-1.06 0-.72-.67-1.09-2.02-1.48z" opacity=".9"></path>
+          </svg>
+        </div>
+        <div class="brand__title">Rotas disponíveis</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <div id="list" class="grid" aria-live="polite"></div>
+  </main>
+
+  <!-- Modal único -->
+  <div id="overlay" class="overlay" aria-modal="true" role="dialog">
+    <div class="modal" role="document" aria-labelledby="modalTitle" aria-describedby="modalBody">
+      <button id="modalClose" class="close-x" aria-label="Fechar">×</button>
+      <div class="modal__hd" id="modalTitle"></div>
+      <div class="modal__bd" id="modalBody"></div>
+      <div class="modal__ft" id="modalFoot"></div>
+    </div>
+  </div>
+</body>
+</html>
