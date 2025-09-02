@@ -6,150 +6,209 @@
 <title>Admin • Rotas</title>
 
 <style>
-  /* ========= Design tokens (Shopee vibe) ========= */
-  :root{
-    --brand:#EE4D2D;
-    --brand-2:#FF6A3C;
-    --bg:#F7F7F8;
-    --card:#FFFFFF;
-    --txt:#0F172A;          /* slate-900 */
-    --muted:#64748B;        /* slate-500 */
-    --line:#E2E8F0;         /* slate-200 */
-    --radius:16px;
-    --radius-lg:20px;
-    --shadow:0 10px 28px rgba(17,24,39,.08);
-    --shadow-soft:0 6px 18px rgba(17,24,39,.06);
-    --focus-ring:0 0 0 3px rgba(238,77,45,.28);
-    --trans:.18s ease;
-  }
+/* ========= Reset leve + base ========= */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+  color: var(--txt);
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(255,106,60,.08), transparent 60%),
+    radial-gradient(900px 400px at -10% 0%, rgba(238,77,45,.06), transparent 55%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.45;
+}
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
-    color:var(--txt);
-    background:
-      radial-gradient(1200px 600px at 100% -10%, rgba(255,106,60,.08), transparent 60%),
-      radial-gradient(900px 400px at -10% 0%, rgba(238,77,45,.06), transparent 55%),
-      var(--bg);
-    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  }
+/* ========= Design tokens (cores mantidas) ========= */
+:root{
+  --brand:#EE4D2D;
+  --brand-2:#FF6A3C;
+  --bg:#F7F7F8;
+  --card:#FFFFFF;
+  --txt:#0F172A;          /* slate-900 */
+  --muted:#64748B;        /* slate-500 */
+  --line:#E2E8F0;         /* slate-200 */
+  --radius:16px;
+  --radius-lg:20px;
+  --shadow:0 10px 28px rgba(17,24,39,.08);
+  --shadow-soft:0 6px 18px rgba(17,24,39,.06);
+  --shadow-strong:0 14px 44px rgba(17,24,39,.12);
+  --focus-ring:0 0 0 3px rgba(238,77,45,.28);
+  --trans:.18s cubic-bezier(.2,.7,.2,1);
+}
 
-  /* ========= Topbar ========= */
-  .topbar{
-    position:sticky; top:0; z-index:20;
-    background:linear-gradient(90deg,var(--brand),var(--brand-2));
-    color:#fff;
-    padding:14px 0;
-    box-shadow:var(--shadow);
-    border-bottom:1px solid rgba(255,255,255,.2);
-  }
-  .topbar__inner{
-    max-width:1100px; margin:0 auto; padding:0 16px;
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-  }
-  .brand{display:flex; align-items:center; gap:12px}
-  .brand__logo{
-    width:40px; height:40px; border-radius:12px;
-    background:#fff; display:grid; place-items:center;
-    box-shadow:0 6px 18px rgba(0,0,0,.18);
-  }
-  .brand__title{font-weight:900; font-size:1.1rem; letter-spacing:.2px}
+/* ========= Topbar ========= */
+.topbar{
+  position: sticky; top: 0; z-index: 50;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  color: #fff;
+  padding: 14px 0;
+  box-shadow: var(--shadow);
+  border-bottom: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: saturate(140%) blur(2px);
+}
+.topbar__inner{
+  max-width: 1100px; margin: 0 auto; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.brand{ display: flex; align-items: center; gap: 12px; }
+.brand__logo{
+  width: 40px; height: 40px; border-radius: 12px;
+  background: #fff; display: grid; place-items: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+.brand__title{
+  font-weight: 900; font-size: 1.1rem; letter-spacing: .2px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.06);
+}
 
-  /* ========= Layout / Card ========= */
-  .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
-  .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius-lg);
-    box-shadow:var(--shadow-soft);
-    padding:18px;
-    transition:box-shadow var(--trans), border-color var(--trans);
-  }
-  .card:hover{ box-shadow:0 12px 26px rgba(17,24,39,.10); border-color:#dbe3ef }
+/* ========= Layout ========= */
+.wrap{ max-width: 1100px; margin: 22px auto; padding: 0 16px; }
+.card{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 18px;
+  transition: box-shadow var(--trans), border-color var(--trans), transform var(--trans);
+}
+.card:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-strong);
+  border-color: #dbe3ef;
+}
+h3{ margin: 0 0 12px; font-size: 1.05rem; font-weight: 900; letter-spacing: .2px; }
 
-  /* ========= Table ========= */
-  table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden}
-  thead th{
-    background:#FFF1EC; color:#6B7280; font-weight:800;
-    padding:12px 14px; text-align:left; border-bottom:1px solid var(--line);
-    font-size:.92rem; letter-spacing:.2px;
-  }
-  tbody td{ padding:14px; border-bottom:1px solid var(--line); vertical-align:middle }
-  tbody tr:hover{ background:#fffaf7 }
+/* ========= Botões ========= */
+.row-actions{ display: flex; gap: 8px; flex-wrap: wrap; }
+.btn{
+  --ring: var(--focus-ring);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--brand);
+  cursor: pointer;
+  font-weight: 900; letter-spacing: .2px;
+  transition: transform var(--trans), filter var(--trans), box-shadow var(--trans), border-color var(--trans), background var(--trans);
+  box-shadow: 0 2px 8px rgba(2,6,23,.06);
+}
+.btn:hover{ filter: brightness(.98); transform: translateY(-1px); }
+.btn:active{ transform: translateY(0) scale(.99); }
+.btn:focus-visible{ outline: none; box-shadow: 0 6px 20px rgba(17,24,39,.12), var(--ring); }
 
-  /* ========= Chips ========= */
-  .chip{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:6px 12px; border-radius:999px; font-size:.82rem; font-weight:800;
-    border:1px solid transparent;
-  }
-  .chip--ok{ background:#EFFFF7; color:#066E4A; border-color:#BAEBD8 }
-  .chip--busy{ background:#FFEDEB; color:#842016; border-color:#FFD3CB }
-  .chip--warn{ background:#FFF7E6; color:#7A4E00; border-color:#FFE0A6 }
+.btn--brand{
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+  color: #fff; border: none;
+  box-shadow: 0 10px 22px rgba(238,77,45,.28);
+}
+.btn--brand:hover{ filter: brightness(.98); transform: translateY(-1px); }
 
-  /* ========= Buttons ========= */
-  .row-actions{display:flex; gap:8px; flex-wrap:wrap}
-  .btn{
-    padding:10px 14px; border-radius:12px; border:1px solid transparent;
-    background:#fff; color:var(--brand); cursor:pointer; font-weight:900; letter-spacing:.2px;
-    transition:transform var(--trans), filter var(--trans), box-shadow var(--trans), border-color var(--trans);
-    box-shadow:0 2px 8px rgba(2,6,23,.06);
-    border:1px solid var(--line);
-  }
-  .btn:hover{ filter:brightness(.98); transform:translateY(-1px) }
-  .btn:active{ transform:translateY(0) scale(.99) }
-  .btn:focus-visible{ outline:none; box-shadow:0 6px 20px rgba(17,24,39,.12), var(--focus-ring) }
+.btn--danger{
+  background: #fff; color: #B91C1C; border: 1px solid #FECACA;
+}
+.btn--danger:hover{ background: #FFF5F5; }
 
-  .btn--brand{
-    background:linear-gradient(180deg,var(--brand),var(--brand-2));
-    color:#fff; border:none;
-    box-shadow:0 10px 22px rgba(238,77,45,.28);
-  }
-  .btn--brand:hover{ filter:brightness(.98); transform:translateY(-1px) }
-  .btn--danger{
-    background:#fff; color:#B91C1C; border:1px solid #FECACA;
-  }
-  .btn--danger:hover{ background:#FFF5F5 }
+/* ========= Chips (status) ========= */
+.chip{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 999px; font-size: .82rem; font-weight: 800;
+  border: 1px solid transparent; white-space: nowrap;
+}
+.chip--ok{ background:#EFFFF7; color:#066E4A; border-color:#BAEBD8 }
+.chip--busy{ background:#FFEDEB; color:#842016; border-color:#FFD3CB }
+.chip--warn{ background:#FFF7E6; color:#7A4E00; border-color:#FFE0A6 }
 
-  /* ========= Modal ========= */
-  .overlay{
-    position:fixed; inset:0; background:rgba(15,23,42,.55);
-    display:none; align-items:center; justify-content:center; padding:16px;
-    backdrop-filter:saturate(140%) blur(2px);
-  }
-  .modal{
-    width:100%; max-width:560px; background:#fff; border-radius:18px;
-    box-shadow:0 18px 42px rgba(2,6,23,.22); border:1px solid #E6EAF2; overflow:hidden;
-    transform:translateY(8px) scale(.98); opacity:0;
-    transition:transform .22s ease, opacity .22s ease;
-  }
-  .overlay[style*="display: flex"] .modal{ transform:translateY(0) scale(1); opacity:1 }
+/* ========= Tabela ========= */
+.table-responsive{
+  width: 100%;
+  overflow: auto;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 720px;
+}
+thead th{
+  position: sticky; top: 0; z-index: 1;
+  background: #FFF1EC;
+  color: #6B7280;
+  font-weight: 800;
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  font-size: .92rem; letter-spacing: .2px;
+}
+tbody td{
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+tbody tr{ transition: background var(--trans); }
+tbody tr:hover{ background: #fffaf7; }
 
-  .modal__hd{ padding:16px 18px; background:#FFF1EC; border-bottom:1px solid #E6EAF2; font-weight:900 }
-  .modal__bd{ padding:18px }
-  .modal__ft{ padding:14px 18px; border-top:1px solid #E6EAF2; display:flex; gap:10px; justify-content:flex-end; background:#FAFAFA }
-  .close-x{
-    position:absolute; right:18px; top:16px; background:transparent; border:none; font-size:22px; cursor:pointer; line-height:1;
-    color:#d04b2e;
-  }
-  .close-x:focus-visible{ outline:none; box-shadow:var(--focus-ring) }
+/* ========= Modal ========= */
+.overlay{
+  position: fixed; inset: 0; background: rgba(15,23,42,.55);
+  display: none; align-items: center; justify-content: center; padding: 16px;
+  backdrop-filter: saturate(140%) blur(2px);
+}
+.modal{
+  width: 100%; max-width: 560px; background: #fff; border-radius: 18px;
+  box-shadow: 0 18px 42px rgba(2,6,23,.22);
+  border: 1px solid #E6EAF2; overflow: hidden;
+  transform: translateY(8px) scale(.98); opacity: 0;
+  transition: transform .22s ease, opacity .22s ease, box-shadow var(--trans);
+}
+.overlay[style*="display: flex"] .modal{
+  transform: translateY(0) scale(1); opacity: 1;
+}
+.modal__hd{
+  padding: 16px 18px; background: #FFF1EC;
+  border-bottom: 1px solid #E6EAF2; font-weight: 900;
+}
+.modal__bd{ padding: 18px; }
+.modal__ft{
+  padding: 14px 18px; border-top: 1px solid #E6EAF2;
+  display: flex; gap: 10px; justify-content: flex-end; background: #FAFAFA;
+}
+.close-x{
+  position: absolute; right: 18px; top: 16px; background: transparent;
+  border: none; font-size: 22px; cursor: pointer; line-height: 1; color: #d04b2e;
+  transition: transform var(--trans), opacity var(--trans);
+}
+.close-x:hover{ transform: rotate(90deg); opacity: .85; }
+.close-x:focus-visible{ outline: none; box-shadow: var(--focus-ring); }
 
-  /* ========= Form fields ========= */
-  .field{ display:flex; flex-direction:column; gap:6px; margin:10px 0 }
-  .field label{ font-weight:700; font-size:.92rem }
-  .field input{
-    padding:12px 14px; border:1px solid var(--line); border-radius:12px; font:inherit; background:#fff;
-    transition:border-color var(--trans), box-shadow var(--trans);
-  }
-  .field input::placeholder{ color:#9AA6B2 }
-  .field input:focus{ box-shadow:var(--focus-ring); border-color:var(--brand-2); outline:none }
+/* ========= Form fields ========= */
+.field{ display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.field label{ font-weight: 700; font-size: .92rem; color: var(--txt); }
+.field input{
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; font: inherit; background: #fff;
+  transition: border-color var(--trans), box-shadow var(--trans), background var(--trans);
+}
+.field input::placeholder{ color: #9AA6B2; }
+.field input:focus{
+  box-shadow: var(--focus-ring);
+  border-color: var(--brand-2); outline: none; background: #fff;
+}
 
-  /* ========= A11y motion ========= */
-  @media (prefers-reduced-motion: reduce){
-    .btn,.modal{ transition:none }
-  }
+/* ========= Tipos de texto utilitários ========= */
+.sub{ color: var(--muted); font-size: .95rem; }
+small.sub{ font-size: .85rem; }
+
+/* ========= Acessibilidade (redução de movimento) ========= */
+@media (prefers-reduced-motion: reduce){
+  .btn, .modal, .card, .close-x, tbody tr { transition: none; }
+}
 </style>
 
 <script type="module">
@@ -243,14 +302,25 @@ function statusChip(s, driver_id, driver_nome){
 
 /* ===== Tabela ===== */
 async function loadRotas(){
-  const {data,error}=await supabase.from("rotas").select("*").order("created_at",{ascending:false});
+  const {data,error}=await supabase
+    .from("rotas")
+    .select("id,label,regiao,status,driver_id,driver_nome,allowed_veiculos,created_at")
+    .order("created_at",{ascending:false});
   if(error){ showMsg("Erro", error.message); return; }
+
   tbody.innerHTML=(data||[]).map(r=>`
     <tr>
-      <td><b>${r.label}</b><br><small>${r.regiao}</small></td>
+      <td>
+        <b>${r.label}</b><br>
+        <small>${r.regiao}</small><br>
+        <small class="sub">Permitidos: ${(r.allowed_veiculos||[]).join(', ')}</small>
+      </td>
       <td>${statusChip(r.status, r.driver_id, r.driver_nome)}</td>
       <td class="row-actions">
-        <button class="btn" data-action="toggle" data-id="${r.id}">${r.status==='disponivel'?'Fechar':'Abrir'}</button>
+        <button class="btn" data-action="toggle" data-id="${r.id}">
+          ${r.status==='disponivel'?'Fechar (indisp.)':'Abrir (disponível)'}
+        </button>
+        <button class="btn" data-action="perm" data-id="${r.id}" data-allowed="${(r.allowed_veiculos||[]).join(',')}">Permissões</button>
         <button class="btn btn--danger" data-action="del" data-id="${r.id}">Excluir</button>
       </td>
     </tr>
@@ -271,16 +341,59 @@ document.addEventListener("click",(e)=>{
       <form id="formNova">
         <div class="field"><label>Rota</label><input name="label" placeholder="ex.: A-3" required></div>
         <div class="field"><label>Região</label><input name="regiao" placeholder="ex.: Jardim Santa Cecília" required></div>
+        <div class="field">
+          <label>Tipos permitidos</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <label><input type="checkbox" name="allowed" value="PASSEIO" checked> Passeio</label>
+            <label><input type="checkbox" name="allowed" value="FIORINO" checked> Fiorino</label>
+            <label><input type="checkbox" name="allowed" value="MOTO" checked> Moto</label>
+          </div>
+        </div>
       </form>
     `, [
       {label:"Cancelar", id:"close"},
       {label:"Divulgar", id:"salvar", variant:"btn--brand", onClick: async ()=>{
         const form=$("#formNova");
-        const label=form.label.value.trim(); const regiao=form.regiao.value.trim();
+        const label=form.label.value.trim(); 
+        const regiao=form.regiao.value.trim();
+        const allowed=[...form.querySelectorAll('input[name="allowed"]:checked')].map(i=>i.value);
+
         if(!label||!regiao){ showMsg("Atenção","Preencha rota e região."); return; }
-        const {error}=await supabase.rpc('admin_insert_rota',{ p_email: currentAdmin, p_label: label, p_regiao: regiao });
+        if(allowed.length===0){ showMsg("Atenção","Selecione pelo menos um tipo de veículo."); return; }
+
+        const {error}=await supabase.rpc('admin_insert_rota',{
+          p_email: currentAdmin, p_label: label, p_regiao: regiao, p_allowed: allowed
+        });
         if(error){ showMsg("Erro ao divulgar", error.message); return; }
         closeModal(); await loadRotas(); showMsg("Pronto","Rota divulgada com sucesso.");
+      }}
+    ]);
+  }
+
+  if(action==="perm"){
+    const current = (btn.dataset.allowed||"").split(',').filter(Boolean);
+    openModal("Tipos permitidos", `
+      <form id="permForm">
+        <div class="field">
+          <label>Tipos de veículo</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            ${["PASSEIO","FIORINO","MOTO"].map(t=>`
+              <label><input type="checkbox" name="allowed" value="${t}" ${current.includes(t)?"checked":""}> ${t[0]+t.slice(1).toLowerCase()}</label>
+            `).join("")}
+          </div>
+        </div>
+      </form>
+    `, [
+      {label:"Cancelar", id:"close"},
+      {label:"Salvar", id:"saveperm", variant:"btn--brand", onClick: async ()=>{
+        const allowed = [...document.querySelectorAll('#permForm input[name="allowed"]:checked')].map(i=>i.value);
+        if(allowed.length===0){ showMsg("Atenção","Selecione pelo menos um tipo."); return; }
+        const {error}=await supabase.rpc('admin_update_allowed_veiculos',{
+          p_email: currentAdmin, p_rota_id: id, p_allowed: allowed
+        });
+        closeModal();
+        if(error){ showMsg("Erro", error.message); return; }
+        await loadRotas(); showMsg("Ok","Permissões atualizadas.");
       }}
     ]);
   }
@@ -321,14 +434,14 @@ function openLogin(){
           type="email"
           placeholder="seuemail@dominio.com"
           required
-          name="nope"                 /* evita histórico salvo */
-          autocomplete="off"          /* desativa autocomplete */
+          name="nope"
+          autocomplete="off"
           autocapitalize="none"
           autocorrect="off"
           spellcheck="false"
           inputmode="email"
-          readonly                    /* bloqueia o dropdown de sugestões */
-          onfocus="this.removeAttribute('readonly');"  /* libera a digitação no foco */
+          readonly
+          onfocus="this.removeAttribute('readonly');"
         >
       </div>
     </form>
@@ -343,20 +456,26 @@ function openLogin(){
       startSession(email);
       closeModal();
       await loadRotas();
-      supabase.channel('rotas-ch')
-        .on('postgres_changes',{event:'*',schema:'public',table:'rotas'},loadRotas)
-        .subscribe();
+      subscribeRotas();
     }}
   ]);
 }
+
+/* ===== Realtime (unsubscribe seguro) ===== */
+let adminChannel;
+function subscribeRotas(){
+  try{ adminChannel?.unsubscribe(); }catch{}
+  adminChannel = supabase.channel('rotas-ch')
+    .on('postgres_changes',{event:'*',schema:'public',table:'rotas'},loadRotas)
+    .subscribe();
+}
+window.addEventListener("beforeunload", ()=>{ try{ adminChannel?.unsubscribe(); }catch{} });
 
 /* ===== Boot ===== */
 window.addEventListener("DOMContentLoaded", async ()=>{
   if (tryResumeSession()){
     await loadRotas();
-    supabase.channel('rotas-ch')
-      .on('postgres_changes',{event:'*',schema:'public',table:'rotas'},loadRotas)
-      .subscribe();
+    subscribeRotas();
   } else {
     openLogin();
   }
@@ -388,17 +507,19 @@ window.addEventListener("DOMContentLoaded", async ()=>{
 
   <div class="wrap">
     <div class="card">
-      <h3 style="margin:0 0 12px;font-size:1.05rem">Rotas publicadas</h3>
-      <table role="table" aria-label="Tabela de rotas publicadas">
-        <thead>
-          <tr>
-            <th style="width:45%">Rota</th>
-            <th style="width:25%">Status</th>
-            <th style="width:30%">Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+      <h3>Rotas publicadas</h3>
+      <div class="table-responsive">
+        <table role="table" aria-label="Tabela de rotas publicadas">
+          <thead>
+            <tr>
+              <th style="width:45%">Rota</th>
+              <th style="width:25%">Status</th>
+              <th style="width:30%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -413,4 +534,3 @@ window.addEventListener("DOMContentLoaded", async ()=>{
   </div>
 </body>
 </html>
-
