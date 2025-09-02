@@ -6,153 +6,172 @@
 <title>Rotas disponíveis</title>
 
 <style>
-  /* ========= Design tokens (Shopee vibe) ========= */
-  :root{
-    --brand:#EE4D2D;
-    --brand-2:#FF6A3C;
-    --bg:#F7F7F8;
-    --card:#FFFFFF;
-    --txt:#0F172A;          /* slate-900 */
-    --muted:#64748B;        /* slate-500 */
-    --line:#E2E8F0;         /* slate-200 */
-    --radius:16px;
-    --radius-lg:20px;
-    --shadow:0 10px 28px rgba(17,24,39,.08);
-    --shadow-soft:0 6px 18px rgba(17,24,39,.06);
-    --focus-ring:0 0 0 3px rgba(238,77,45,.28);
-    --trans:.18s ease;
-  }
+/* ========= Reset + base ========= */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+  color:var(--txt);
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(255,106,60,.08), transparent 60%),
+    radial-gradient(900px 400px at -10% 0%, rgba(238,77,45,.06), transparent 55%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  line-height:1.45;
+}
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
-    color:var(--txt);
-    background:
-      radial-gradient(1200px 600px at 100% -10%, rgba(255,106,60,.08), transparent 60%),
-      radial-gradient(900px 400px at -10% 0%, rgba(238,77,45,.06), transparent 55%),
-      var(--bg);
-    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  }
+/* ========= Tokens (cores mantidas) ========= */
+:root{
+  --brand:#EE4D2D;
+  --brand-2:#FF6A3C;
+  --bg:#F7F7F8;
+  --card:#FFFFFF;
+  --txt:#0F172A;
+  --muted:#64748B;
+  --line:#E2E8F0;
+  --radius:16px;
+  --radius-lg:20px;
+  --shadow:0 10px 28px rgba(17,24,39,.08);
+  --shadow-soft:0 6px 18px rgba(17,24,39,.06);
+  --focus-ring:0 0 0 3px rgba(238,77,45,.28);
+  --trans:.18s cubic-bezier(.2,.7,.2,1);
 
-  /* ========= Topbar ========= */
-  .topbar{
-    position:sticky; top:0; z-index:20;
-    background:linear-gradient(90deg,var(--brand),var(--brand-2));
-    color:#fff;
-    padding:14px 0;
-    box-shadow:var(--shadow);
-    border-bottom:1px solid rgba(255,255,255,.2);
-  }
-  .topbar__inner{
-    max-width:1100px; margin:0 auto; padding:0 16px;
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-  }
+  /* Cores dos tipos de veículo */
+  --passeio-bg: #E6F4FF;  --passeio-fg:#0B6CA8;  --passeio-br:#B7DFFF;
+  --fiorino-bg: #FFF7E6;  --fiorino-fg:#7A4E00;  --fiorino-br:#FFE3A6;
+  --moto-bg:    #EFFFF7;  --moto-fg:#066E4A;     --moto-br:#BAEBD8;
+}
 
-  .brand{
-    display:flex; align-items:center; gap:12px;
-  }
-  .brand__logo{
-    width:40px; height:40px; border-radius:12px;
-    background:#fff; display:grid; place-items:center;
-    box-shadow:0 6px 18px rgba(0,0,0,.18);
-  }
-  .brand__title{
-    font-weight:900; font-size:1.1rem; letter-spacing:.2px;
-  }
+/* ========= Topbar ========= */
+.topbar{
+  position:sticky; top:0; z-index:20;
+  background:linear-gradient(90deg,var(--brand),var(--brand-2));
+  color:#fff; padding:14px 0;
+  box-shadow:var(--shadow);
+  border-bottom:1px solid rgba(255,255,255,.2);
+  backdrop-filter:saturate(140%) blur(2px);
+}
+.topbar__inner{
+  max-width:1100px; margin:0 auto; padding:0 16px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand__logo{
+  width:40px; height:40px; border-radius:12px;
+  background:#fff; display:grid; place-items:center;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+}
+.brand__title{ font-weight:900; font-size:1.1rem; letter-spacing:.2px; }
 
-  /* ========= Layout ========= */
-  .wrap{max-width:1100px;margin:22px auto;padding:0 16px}
-  .grid{
-    display:grid; gap:16px;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-  @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+/* ========= Layout ========= */
+.wrap{max-width:1100px;margin:22px auto;padding:0 16px}
+.grid{ display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media (max-width:900px){ .grid{grid-template-columns:1fr} }
 
-  /* ========= Cards ========= */
-  .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius-lg);
-    box-shadow:var(--shadow-soft);
-    padding:18px;
-    display:flex; flex-direction:column; gap:12px;
-    transition:transform var(--trans), box-shadow var(--trans), border-color var(--trans);
-  }
-  .card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 26px rgba(17,24,39,.10);
-    border-color:#dbe3ef;
-  }
-  .title{font-size:1.05rem;font-weight:900}
-  .sub{color:var(--muted);font-size:.95rem}
+/* ========= Cards ========= */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-soft);
+  padding:18px;
+  display:flex; flex-direction:column; gap:12px;
+  transition:transform var(--trans), box-shadow var(--trans), border-color var(--trans);
+}
+.card:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(17,24,39,.10); border-color:#dbe3ef; }
+.title{font-size:1.05rem;font-weight:900}
+.sub{color:var(--muted);font-size:.95rem}
 
-  /* Destaque da última rota do usuário */
-  .mine{ outline:3px solid rgba(18,185,129,.28); outline-offset:2px }
+/* Destaca a última rota que o usuário pegou */
+.mine{ outline:3px solid rgba(18,185,129,.28); outline-offset:2px }
 
-  /* ========= Chips ========= */
-  .chip{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:6px 12px; border-radius:999px; font-size:.82rem; font-weight:800;
-    border:1px solid transparent;
-  }
-  .chip--ok{ background:#EFFFF7; color:#066E4A; border-color:#BAEBD8 }
-  .chip--busy{ background:#FFEDEB; color:#842016; border-color:#FFD3CB }
-  .chip--warn{ background:#FFF7E6; color:#7A4E00; border-color:#FFE0A6 }
+/* ========= Chips de status ========= */
+.chip{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 12px; border-radius:999px; font-size:.82rem; font-weight:800;
+  border:1px solid transparent;
+}
+.chip--ok{ background:#EFFFF7; color:#066E4A; border-color:#BAEBD8 }
+.chip--busy{ background:#FFEDEB; color:#842016; border-color:#FFD3CB }
+.chip--warn{ background:#FFF7E6; color:#7A4E00; border-color:#FFE0A6 }
 
-  /* ========= Botões ========= */
-  .btn{
-    --btn-shadow:0 10px 22px rgba(238,77,45,.28);
-    padding:12px 14px;
-    border-radius:12px; border:1px solid transparent;
-    background:linear-gradient(180deg,var(--brand),var(--brand-2));
-    color:#fff; cursor:pointer; font-weight:900; letter-spacing:.2px;
-    box-shadow:var(--btn-shadow);
-    transition:transform var(--trans), filter var(--trans), box-shadow var(--trans);
-  }
-  .btn:hover{ filter:brightness(.98); transform:translateY(-1px) }
-  .btn:active{ transform:translateY(0) scale(.99) }
-  .btn:focus-visible{ outline:none; box-shadow:var(--btn-shadow), var(--focus-ring) }
-  .btn[disabled]{ opacity:.55; cursor:not-allowed; filter:saturate(.6); box-shadow:none }
+/* ========= Linha "Permitidos" + Status ========= */
+.meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:4px;
+}
 
-  /* ========= Modal ========= */
-  .overlay{
-    position:fixed; inset:0; background:rgba(15,23,42,.55);
-    display:none; align-items:center; justify-content:center; padding:16px;
-    backdrop-filter:saturate(140%) blur(2px);
-  }
-  .modal{
-    width:100%; max-width:560px; background:#fff; border-radius:18px;
-    box-shadow:0 18px 42px rgba(2,6,23,.22); border:1px solid #E6EAF2; overflow:hidden;
-    transform:translateY(8px) scale(.98); opacity:0;
-    transition:transform .22s ease, opacity .22s ease;
-  }
-  .overlay[style*="display: flex"] .modal{ transform:translateY(0) scale(1); opacity:1 }
+/* ========= Badges de veículos permitidos ========= */
+.allowed{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  margin-top:4px;
+}
+.veh{
+  display:inline-flex; align-items:center; gap:6px;
+  font-weight:800; font-size:.78rem; letter-spacing:.2px;
+  padding:6px 10px; border-radius:999px; border:1px solid transparent;
+}
+.veh--passeio{ background:var(--passeio-bg); color:var(--passeio-fg); border-color:var(--passeio-br); }
+.veh--fiorino{ background:var(--fiorino-bg); color:var(--fiorino-fg); border-color:var(--fiorino-br); }
+.veh--moto{    background:var(--moto-bg);    color:var(--moto-fg);    border-color:var(--moto-br); }
 
-  .modal__hd{ padding:16px 18px; background:#FFF1EC; border-bottom:1px solid #E6EAF2; font-weight:900 }
-  .modal__bd{ padding:18px }
-  .modal__ft{ padding:14px 18px; border-top:1px solid #E6EAF2; display:flex; gap:10px; justify-content:flex-end; background:#FAFAFA }
-  .close-x{
-    position:absolute; right:18px; top:16px; background:transparent; border:none; font-size:22px; cursor:pointer; line-height:1;
-    color:#d04b2e;
-  }
-  .close-x:focus-visible{ outline:none; box-shadow:var(--focus-ring) }
+/* ========= Botões ========= */
+.btn{
+  --btn-shadow:0 10px 22px rgba(238,77,45,.28);
+  padding:12px 14px;
+  border-radius:12px; border:1px solid transparent;
+  background:linear-gradient(180deg,var(--brand),var(--brand-2));
+  color:#fff; cursor:pointer; font-weight:900; letter-spacing:.2px;
+  box-shadow:var(--btn-shadow);
+  transition:transform var(--trans), filter var(--trans), box-shadow var(--trans);
+}
+.btn:hover{ filter:brightness(.98); transform:translateY(-1px) }
+.btn:active{ transform:translateY(0) scale(.99) }
+.btn:focus-visible{ outline:none; box-shadow:var(--btn-shadow), var(--focus-ring) }
+.btn[disabled]{ opacity:.55; cursor:not-allowed; filter:saturate(.6); box-shadow:none }
 
-  /* ========= Form fields ========= */
-  .field{ display:flex; flex-direction:column; gap:6px; margin:10px 0 }
-  .field label{ font-weight:700; font-size:.92rem }
-  .field input{
-    padding:12px 14px; border:1px solid var(--line); border-radius:12px; font:inherit; background:#fff;
-    transition:border-color var(--trans), box-shadow var(--trans);
-  }
-  .field input::placeholder{ color:#9AA6B2 }
-  .field input:focus{ box-shadow:var(--focus-ring); border-color:var(--brand-2); outline:none }
+/* ========= Modal ========= */
+.overlay{
+  position:fixed; inset:0; background:rgba(15,23,42,.55);
+  display:none; align-items:center; justify-content:center; padding:16px;
+  backdrop-filter:saturate(140%) blur(2px);
+}
+.modal{
+  width:100%; max-width:560px; background:#fff; border-radius:18px;
+  box-shadow:0 18px 42px rgba(2,6,23,.22); border:1px solid #E6EAF2; overflow:hidden;
+  transform:translateY(8px) scale(.98); opacity:0;
+  transition:transform .22s ease, opacity .22s ease;
+}
+.overlay[style*="display: flex"] .modal{ transform:translateY(0) scale(1); opacity:1 }
+.modal__hd{ padding:16px 18px; background:#FFF1EC; border-bottom:1px solid #E6EAF2; font-weight:900 }
+.modal__bd{ padding:18px }
+.modal__ft{ padding:14px 18px; border-top:1px solid #E6EAF2; display:flex; gap:10px; justify-content:flex-end; background:#FAFAFA }
+.close-x{
+  position:absolute; right:18px; top:16px; background:transparent; border:none; font-size:22px; cursor:pointer; line-height:1;
+  color:#d04b2e;
+}
+.close-x:focus-visible{ outline:none; box-shadow:var(--focus-ring) }
 
-  /* ========= Acessibilidade leve ========= */
-  @media (prefers-reduced-motion: reduce){
-    .card,.btn,.modal{ transition:none }
-  }
+/* ========= Campos ========= */
+.field{ display:flex; flex-direction:column; gap:6px; margin:10px 0 }
+.field label{ font-weight:700; font-size:.92rem }
+.field input{
+  padding:12px 14px; border:1px solid var(--line); border-radius:12px; font:inherit; background:#fff;
+  transition:border-color var(--trans), box-shadow var(--trans);
+}
+.field input::placeholder{ color:#9AA6B2 }
+.field input:focus{ box-shadow:var(--focus-ring); border-color:var(--brand-2); outline:none }
+
+/* ========= Motion reduce ========= */
+@media (prefers-reduced-motion: reduce){
+  .card,.btn,.modal{ transition:none }
+}
 </style>
 
 <script type="module">
@@ -175,9 +194,7 @@ let actionsMap = {};
 
 function closeModal(){
   overlay.style.display = "none";
-  mTitle.textContent = "";
-  mBody.innerHTML = "";
-  mFoot.innerHTML = "";
+  mTitle.textContent = ""; mBody.innerHTML = ""; mFoot.innerHTML = "";
   actionsMap = {};
 }
 function openModal(title, html, actions=[{label:"Fechar",id:"close"}]){
@@ -195,13 +212,22 @@ mFoot.addEventListener("click",(e)=>{
 });
 document.querySelector("#modalClose").addEventListener("click", closeModal);
 
+/* ====== Helpers UI ====== */
+function badgeFor(type){
+  const t = (type||"").toUpperCase();
+  if (t==="PASSEIO") return `<span class="veh veh--passeio">PASSEIO</span>`;
+  if (t==="FIORINO") return `<span class="veh veh--fiorino">FIORINO</span>`;
+  if (t==="MOTO")    return `<span class="veh veh--moto">MOTO</span>`;
+  return `<span class="veh">${t}</span>`;
+}
+
 /* ====== Lógica de rotas ====== */
 let myLastClaim = null;
 
 async function listRotas(){
   const { data, error } = await supabase
     .from("rotas")
-    .select("id,label,regiao,status,driver_id,driver_nome,claimed_at")
+    .select("id,label,regiao,status,driver_id,driver_nome,claimed_at,allowed_veiculos")
     .order("created_at",{ascending:false});
   if(error){
     openModal("Erro", `<p>${error.message}</p>`);
@@ -215,20 +241,28 @@ function render(rows){
     const disponivel = r.status==="disponivel";
     const jaPegou    = r.status==="pegou";
     const me         = (myLastClaim && myLastClaim===r.id);
+    const allowed    = r.allowed_veiculos || [];
 
     return `
       <div class="card ${me?'mine':''}">
         <div class="title">Rota: ${r.label}</div>
         <div class="sub">Região: ${r.regiao}</div>
 
-        <div>
-          ${
-            disponivel
-              ? `<span class="chip chip--ok">Disponível</span>`
-              : jaPegou
-                ? `<span class="chip chip--busy">Rota repassada</span>`
-                : `<span class="chip chip--warn">Indisponível</span>`
-          }
+        <div class="meta">
+          <div class="sub">Permitidos:</div>
+          <div>
+            ${
+              disponivel
+                ? `<span class="chip chip--ok">Disponível</span>`
+                : jaPegou
+                  ? `<span class="chip chip--busy">Rota repassada</span>`
+                  : `<span class="chip chip--warn">Indisponível</span>`
+            }
+          </div>
+        </div>
+
+        <div class="allowed">
+          ${allowed.map(badgeFor).join('')}
         </div>
 
         ${
@@ -270,45 +304,47 @@ document.addEventListener("click",(e)=>{
       const driverId = (form.driver_id.value||"").trim();
       if(!driverId){ form.driver_id.focus(); return; }
 
+      // EVITA duplo clique
+      const setLoading=(on)=>{ const b=document.querySelector('[data-act="doClaim"]'); if(!b) return;
+        if(on){ b.dataset._t=b.textContent; b.textContent="Processando..."; b.disabled=true; }
+        else  { b.textContent=b.dataset._t||b.textContent; b.disabled=false; } };
+      setLoading(true);
+
+      // Backend valida: motorista ativo, tipo permitido, 1 rota ativa
       const { data, error } = await supabase.rpc("claim_rota",{ p_rota_id: rotaId, p_driver_id: driverId });
 
-      // Mensagem amigável se já tiver outra rota
+      setLoading(false);
+      closeModal();
+
       if(error){
-        closeModal();
-        const jaTem = error.code === "23505" || (error.message||"").includes("uniq_rotas_driver_ativo");
-        openModal("Aviso", `<p>${
-          jaTem
-            ? "Você só pode se candidatar a uma rota por vez. Finalize/libere a atual com o analista para pegar outra."
-            : (error.message || "Ocorreu um erro.")
-        }</p>`);
+        openModal("Aviso", `<p>${error.message || "Ocorreu um erro."}</p>`);
         return;
       }
 
       const resp = (data && data[0]) || data;
-      closeModal();
-
       if(resp?.ok){
         myLastClaim = resp.rota_id;
         openModal("Tudo certo!", `<p>Você pegou a rota <b>${resp.rota_label}</b> (${resp.rota_regiao}). Avise o analista.</p>`);
         await listRotas();
       }else{
-        openModal("Aviso", `<p>${
-          resp?.mensagem || "Você só pode se candidatar a uma rota por vez. Finalize/libere a atual com o analista para pegar outra."
-        }</p>`);
+        // Exibe msg amigável que veio do banco (ex.: "Rota permitida apenas para: PASSEIO, FIORINO")
+        openModal("Aviso", `<p>${resp?.mensagem || "Não foi possível pegar a rota."}</p>`);
       }
     }}
   ]);
 });
 
 /* Canal em tempo real */
+let rotasChannel;
 async function main(){
   await listRotas();
-  supabase
+  rotasChannel = supabase
     .channel("rotas-live")
     .on("postgres_changes", { event:"*", schema:"public", table:"rotas" }, listRotas)
     .subscribe();
 }
 main();
+window.addEventListener("beforeunload", ()=>{ try{ rotasChannel?.unsubscribe(); }catch{} });
 </script>
 </head>
 
@@ -350,4 +386,3 @@ main();
   </div>
 </body>
 </html>
-
