@@ -201,9 +201,7 @@
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
     <div class="h" id="dlgTitle">Título</div>
     <div class="c" id="dlgContent">Mensagem</div>
-    <div class="f" id="dlgActions">
-      <!-- Botões inseridos via JS -->
-    </div>
+    <div class="f" id="dlgActions"></div>
   </div>
 </div>
 
@@ -249,7 +247,6 @@ function openDialog({title, message, actions}) {
       f.appendChild(b);
     });
     bd.style.display='flex';
-    // ESC fecha no primeiro botão (geralmente cancelar)
     const onKey = (e)=>{ if(e.key==='Escape'){ bd.style.display='none'; resolve(actions[0]?.value ?? null); window.removeEventListener('keydown', onKey); } };
     window.addEventListener('keydown', onKey);
   });
@@ -408,8 +405,7 @@ document.getElementById('btnCreate').onclick = async ()=>{
   });
   if(error){ await modalAlert('Erro', error.message || 'Falha ao divulgar.'); return; }
 
-  document.getElementById('cluster').value='';
-  document.getElementById('region').value='';
+  document.getElementById('cluster').value=''; document.getElementById('region').value='';
   document.querySelectorAll('.veh').forEach(c=>c.checked=true);
   closeModal();
   await modalAlert('Publicado', (data && data[0]?.message) || 'Rota divulgada.');
