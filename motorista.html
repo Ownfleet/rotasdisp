@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rotas disponíveis</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    /* Brand */
+    --brand:#ff5a2a; --brand-2:#ff713f;
+    --ink:#0e1320; --muted:#6c7282;
+
+    /* Surfaces */
+    --bg:#f6f7fb; --panel:rgba(255,255,255,.78); --stroke:rgba(110,120,150,.12);
+
+    /* Effects */
+    --blur:12px;
+    --shadow-lg:0 30px 60px rgba(15,23,42,.12), 0 10px 20px rgba(15,23,42,.06);
+    --shadow-sm:0 12px 24px rgba(15,23,42,.08);
+
+    /* Status */
+    --ok:#16a34a; --warn:#f59e0b; --danger:#ef4444;
+
+    /* Chips */
+    --chip-blue-from:#ecf3ff; --chip-blue-to:#dfeaff; --chip-blue-text:#2156a4;
+    --chip-gold-from:#fff5dd; --chip-gold-to:#ffeab6; --chip-gold-text:#775e00;
+    --chip-green-from:#e8fbf1; --chip-green-to:#d6f5e4; --chip-green-text:#0a7a57;
+
+    /* Radii */
+    --r-card:26px; --r-btn:14px; --r-chip:999px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    font:16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    background:
+      radial-gradient(1000px 600px at 15% -10%, #ffeae1 0, rgba(255,234,225,0) 55%),
+      radial-gradient(900px 600px at 110% 0%, #ffe0d4 0, rgba(255,224,212,0) 50%),
+      var(--bg);
+  }
+
+  .appbar{position:sticky; top:0; z-index:30; background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:0 12px 28px rgba(255,90,42,.22)}
+  .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px}
+  .logo{display:flex; align-items:center; gap:12px; font-weight:900}
+  .logo i{width:40px; height:40px; border-radius:14px; display:grid; place-items:center; background:#fff; color:var(--brand); box-shadow:inset 0 0 0 2px rgba(255,255,255,.4), 0 6px 20px rgba(0,0,0,.15); font-style:normal}
+
+  .wrap{max-width:1200px; margin:26px auto; padding:0 20px}
+  .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:20px}
+
+  .card{
+    position:relative; isolation:isolate;
+    border-radius:var(--r-card);
+    background:var(--panel);
+    border:1px solid var(--stroke);
+    backdrop-filter: blur(var(--blur));
+    box-shadow:var(--shadow-lg);
+    overflow:hidden;
+    padding:18px 18px 16px;
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .card::before{
+    content:""; position:absolute; inset:-1px -1px auto -1px; height:68px; z-index:-1;
+    background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0));
+  }
+  .card:hover{ transform:translateY(-2px); box-shadow:0 36px 70px rgba(15,23,42,.14), var(--shadow-sm); border-color:rgba(110,120,150,.18)}
+
+  /* Ribbon */
+  .ribbon{
+    position:absolute; top:14px; right:-42px; rotate:8deg; pointer-events:none;
+    padding:6px 52px; border-radius:999px; border:1px solid rgba(0,0,0,.06);
+    font-weight:900; letter-spacing:.2px; text-transform:uppercase;
+    backdrop-filter: blur(6px);
+  }
+  .ribbon.ok{ background:linear-gradient(90deg, rgba(22,163,74,.15), rgba(22,163,74,.07)); color:#065f2a; border-color:rgba(22,163,74,.25)}
+  .ribbon.warn{ background:linear-gradient(90deg, rgba(245,158,11,.18), rgba(245,158,11,.08)); color:#7a4d00; border-color:rgba(245,158,11,.28)}
+  .ribbon.mine{ background:linear-gradient(90deg, rgba(37,99,235,.18), rgba(37,99,235,.10)); color:#1d4ed8; border-color:rgba(37,99,235,.28)}
+
+  .title{font-size:20px; font-weight:900; margin:0 0 6px}
+  .sub{color:var(--muted); margin:0 0 14px}
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:var(--r-chip); font-weight:800; font-size:13px; border:1px solid transparent; box-shadow:inset 0 -1px rgba(0,0,0,.04)}
+  .chip.blue{background:linear-gradient(180deg,var(--chip-blue-from),var(--chip-blue-to)); color:var(--chip-blue-text); border-color:#d8e7ff}
+  .chip.gold{background:linear-gradient(180deg,var(--chip-gold-from),var(--chip-gold-to)); color:var(--chip-gold-text); border-color:#ffe3ad}
+  .chip.green{background:linear-gradient(180deg,var(--chip-green-from),var(--chip-green-to)); color:var(--chip-green-text); border-color:#c8efde}
+
+  .btn{
+    width:100%; padding:14px 16px; border-radius:var(--r-btn);
+    background:linear-gradient(180deg,#ff7a58,#ff5a2a); color:#fff;
+    border:1px solid rgba(255,90,42,.35); font-weight:900; letter-spacing:.2px;
+    box-shadow:0 14px 26px rgba(255,90,42,.25), 0 3px 8px rgba(255,90,42,.25) inset;
+    cursor:pointer; transition: transform .05s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .btn:hover{ box-shadow:0 18px 38px rgba(255,90,42,.32), 0 3px 8px rgba(255,90,42,.25) inset; transform: translateY(-1px) }
+  .btn:active{ transform:translateY(0); filter: saturate(.92) }
+  .btn[disabled]{ opacity:.55; cursor:not-allowed; filter:grayscale(.15); box-shadow:none; background:linear-gradient(180deg,#f0f1f6,#e7e9f1); color:#9aa3b4; border-color:#e5e8f1 }
+
+  .empty{
+    margin:56px auto; max-width:720px; text-align:center; color:#7b8396;
+    background:var(--panel); border:1px solid var(--stroke); border-radius:28px;
+    padding:28px; box-shadow:var(--shadow-lg); backdrop-filter: blur(var(--blur));
+  }
+
+  /* Modal */
+  .backdrop{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:40; background:rgba(5,10,25,.55); backdrop-filter: blur(8px)}
+  .modal{width:min(640px,92vw); background:var(--panel); border:1px solid var(--stroke); border-radius:24px; box-shadow:var(--shadow-lg); overflow:hidden; animation:pop .16s ease; backdrop-filter: blur(var(--blur))}
+  @keyframes pop{from{transform:translateY(8px); opacity:0} to{transform:none; opacity:1}}
+  .m-head{background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65)); padding:16px 18px; display:flex; align-items:center; justify-content:space-between}
+  .m-body{padding:18px}
+  .m-foot{padding:16px 18px; display:flex; gap:10px; justify-content:flex-end; background:linear-gradient(0deg,rgba(255,255,255,.85),rgba(255,255,255,.65))}
+  label{font-size:14px; color:#536079; display:block; margin-bottom:6px}
+  input{width:100%; padding:12px 14px; border:1px solid rgba(110,120,150,.22); border-radius:14px; background:rgba(255,255,255,.9); outline:none}
+  input:focus{box-shadow:0 0 0 3px rgba(255,90,42,.18); border-color:rgba(255,90,42,.45)}
+  .btn-sec{background:#fff; color:#ff3e0e; border:1px solid #ffd9ce; padding:10px 16px; border-radius:12px; font-weight:800; cursor:pointer}
+  .btn-prim{background:linear-gradient(180deg,#ff7a58,#ff5a2a); color:#fff; border:none; padding:10px 16px; border-radius:12px; font-weight:800; cursor:pointer}
+
+  /* Toast */
+  .toast{position:fixed; right:18px; bottom:18px; z-index:60; color:#fff; background:#0b1428; padding:11px 14px; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:none}
+
+  /* Callout “sua rota” */
+  .callout{
+    margin-top:12px; padding:12px 12px; border-radius:14px;
+    background:#eef6ff; border:1px solid #d9e8ff; color:#0f3b8d; font-weight:600;
+  }
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="inner">
+    <div class="logo"><i>🛡️</i><div>Rotas disponíveis</div></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="empty" class="empty" style="display:none">
+    <h3 style="margin:0 0 8px; font-size:22px; color:#0f172a">Sem rotas divulgadas por enquanto</h3>
+    <div>Assim que uma rota for publicada, ela aparece aqui automaticamente.</div>
+  </div>
+  <div id="grid" class="grid"></div>
+</main>
+
+<!-- Modal -->
+<div class="backdrop" id="backdrop">
+  <div class="modal">
+    <div class="m-head">
+      <h3 style="margin:0" id="mTitle">Pegar rota</h3>
+      <button class="btn-sec" id="mClose">✕</button>
+    </div>
+    <div class="m-body">
+      <div style="margin-bottom:12px"><b id="mRegion"></b></div>
+      <label for="driverId">Seu ID</label>
+      <input id="driverId" placeholder="Digite seu ID">
+    </div>
+    <div class="m-foot">
+      <button class="btn-sec" id="mCancel">Cancelar</button>
+      <button class="btn-prim" id="mConfirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Supabase ===== */
+const SUPABASE_URL = 'https://rtuxwydhgucdqbmyuhbt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXh3eWRoZ3VjZHFibXl1aGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MTQyOTEsImV4cCI6MjA3NTM5MDI5MX0._69KQdPbipke-jVmF_UEO3VAYaiEqpa1h81jUVTN684';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ===== helpers ===== */
+const $ = s => document.querySelector(s);
+function toast(msg, ms=2200){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',ms); }
+const chip = v => v==='PASSEIO' ? `<span class="chip blue">PASSEIO</span>`
+  : v==='FIORINO' ? `<span class="chip gold">FIORINO</span>`
+  : `<span class="chip green">MOTO</span>`;
+
+/* ===== state ===== */
+let channel=null, currentRoute=null;
+
+/* ===== data ===== */
+async function fetchRoutes(){
+  const { data, error } = await sb
+    .from('routes')
+    .select('id, cluster, region, vehicle_allowed, claimed_driver_id, created_at')
+    .order('created_at',{ascending:false});
+  if(error){ console.error(error); return []; }
+  return data || [];
+}
+
+/* ===== UI ===== */
+function ribbonFor(r, myId){
+  if(r.claimed_driver_id){
+    if(myId && r.claimed_driver_id === myId) return `<div class="ribbon mine">Você pegou</div>`;
+    return `<div class="ribbon warn">Rota repassada</div>`;
+  }
+  return `<div class="ribbon ok">Disponível</div>`;
+}
+
+async function render(){
+  const grid = $('#grid'); grid.innerHTML = '';
+  const empty = $('#empty');
+  const rows = await fetchRoutes();
+
+  if(!rows.length){ empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  const myId = localStorage.getItem('driver_id') || '';
+
+  // Disponíveis primeiro
+  rows.sort((a,b)=>{
+    const avA = a.claimed_driver_id?1:0, avB = b.claimed_driver_id?1:0;
+    if(avA !== avB) return avA - avB;
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  rows.forEach(r=>{
+    const claimed = !!r.claimed_driver_id;
+    const isMine  = claimed && myId && (r.claimed_driver_id === myId);
+
+    const card = document.createElement('article');
+    card.className='card';
+    card.innerHTML = `
+      ${ribbonFor(r, myId)}
+      <h3 class="title">Rota: ${r.cluster || '-'}</h3>
+      <p class="sub">Região: ${r.region || ''}</p>
+      <div class="chips">${(r.vehicle_allowed||[]).map(chip).join('')}</div>
+      <button class="btn" data-id="${r.id}" data-title="${r.cluster||'-'}" data-region="${r.region||''}" ${claimed?'disabled':''}>
+        ${claimed ? (isMine ? 'Você já pegou' : 'Indisponível') : 'Pegar rota'}
+      </button>
+      ${isMine ? `<div class="callout">✅ Você pegou esta rota. <b>Entre em contato com o analista para confirmar.</b></div>` : ''}
+    `;
+    if(!claimed) card.querySelector('button').onclick = openModal;
+    grid.appendChild(card);
+  });
+}
+
+/* ===== modal ===== */
+function openModal(ev){
+  const btn = ev.currentTarget;
+  currentRoute = { id:Number(btn.dataset.id), title:btn.dataset.title, region:btn.dataset.region };
+  $('#mTitle').textContent = `Pegar rota ${currentRoute.title}`;
+  $('#mRegion').textContent = `Região: ${currentRoute.region}`;
+  $('#driverId').value = localStorage.getItem('driver_id') || '';
+  $('#backdrop').style.display='flex';
+}
+function closeModal(){ $('#backdrop').style.display='none'; }
+$('#mClose').onclick = closeModal;
+$('#mCancel').onclick = closeModal;
+
+$('#mConfirm').onclick = async ()=>{
+  if(!currentRoute) return;
+  const driverId = $('#driverId').value.trim();
+  if(!driverId){ toast('Informe seu ID'); return; }
+
+  const { data, error } = await sb.rpc('claim_route', {
+    p_route_id: currentRoute.id,
+    p_driver_id: driverId
+  });
+  if(error){ toast('Erro: '+(error.message||'')); return; }
+
+  const res = data && data[0] ? data[0] : { success:false, message:'Falha' };
+  toast(res.message);
+
+  if(res.success){
+    // lembrar quem sou eu para marcar a rota como "minha"
+    localStorage.setItem('driver_id', driverId);
+  }
+
+  closeModal();
+  await render();
+};
+
+/* ===== realtime ===== */
+async function subRealtime(){
+  if(channel) sb.removeChannel(channel);
+  channel = sb.channel('routes-driver')
+    .on('postgres_changes',{event:'*',schema:'public',table:'routes'}, render)
+    .subscribe();
+}
+
+/* init */
+(async function(){
+  await render();
+  await subRealtime();
+})();
+</script>
+</body>
+</html>
