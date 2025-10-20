@@ -6,9 +6,7 @@
 <title>Rotas • Admin</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
-  /* ===== THEMES ===== */
   :root{
-    /* LIGHT (defaults) */
     --brand:#ff5a2a; --brand-2:#ff713f; --brand-3:#ff3e0e;
     --ink:#0e1320; --muted:#6c7282;
     --bg:#f6f7fb; --grad-a:#ffeae1; --grad-b:#ffe0d4;
@@ -47,8 +45,16 @@
   /* Appbar */
   .appbar{position:sticky; top:0; z-index:30; background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:var(--header-shadow)}
   .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px}
+
+  /* LOGO: badge branco + imagem responsiva */
   .logo{display:flex; align-items:center; gap:12px; font-weight:900}
-  .logo i{width:40px; height:40px; border-radius:14px; display:grid; place-items:center; background:#fff; color:var(--brand); box-shadow:inset 0 0 0 2px rgba(255,255,255,.4), 0 6px 20px rgba(0,0,0,.15); font-style:normal}
+  .logo .badge{
+    display:flex; align-items:center; justify-content:center;
+    height:40px; padding:0 10px; border-radius:14px;
+    background:#fff; box-shadow:inset 0 0 0 2px rgba(255,255,255,.4), 0 6px 20px rgba(0,0,0,.15);
+  }
+  .logo img.brand{height:24px; width:auto; display:block; object-fit:contain}
+
   .spacer{flex:1}
   .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 16px; border-radius:var(--r-btn); border:1px solid var(--btn-ghost-bd); background:#fff; color:var(--brand-3); font-weight:800; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.06); transition:transform .06s, box-shadow .15s}
   .btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(0) scale(.98)}
@@ -56,7 +62,11 @@
   .btn.small{padding:8px 12px}
   .toggle{border-color:var(--btn-ghost-bd);}
 
-  /* Layout */
+  .badge{
+    display:inline-block; min-width:22px; padding:2px 8px; border-radius:999px;
+    background:#fff; color:#ff3e0e; font-weight:900; text-align:center; border:1px solid var(--btn-ghost-bd);
+  }
+
   .wrap{max-width:1200px; margin:26px auto; padding:0 20px}
 
   /* Login */
@@ -98,7 +108,7 @@
   [data-theme="dark"] .btn-action.danger{background:linear-gradient(rgba(255,255,255,.07),rgba(255,255,255,.05)); color:#ffb3b3}
   .btn-action:disabled{opacity:.55; filter:grayscale(.15); cursor:not-allowed; box-shadow:none}
 
-  /* ===== Modais (genéricos) ===== */
+  /* Modais */
   .backdrop{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:40; background:rgba(5,10,25,.55); backdrop-filter: blur(8px)}
   .modal{width:min(720px, 92vw); background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow-lg); overflow:hidden; animation:pop .16s ease}
   @keyframes pop{from{transform:translateY(8px); opacity:0} to{transform:none; opacity:1}}
@@ -111,7 +121,7 @@
   .check{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff}
   [data-theme="dark"] .check{background:rgba(255,255,255,.06); color:var(--ink)}
 
-  /* Dialog modal */
+  /* Dialog */
   .dialog{width:min(520px,90vw); background:var(--modal-surface); border:1px solid var(--modal-line); border-radius:20px; box-shadow:var(--shadow-lg); overflow:hidden; animation:pop .14s ease}
   .dialog .h{padding:14px 16px; font-weight:900; border-bottom:1px solid var(--modal-line)}
   .dialog .c{padding:16px}
@@ -121,9 +131,7 @@
   .btn-danger{background:linear-gradient(180deg,#ff8a70,#ff5a2a); color:#fff; border:none; padding:10px 16px; border-radius:12px; font-weight:900; cursor:pointer}
   .btn-primary{background:linear-gradient(180deg,#ff7a58,#ff5a2a); color:#fff; border:none; padding:10px 16px; border-radius:12px; font-weight:900; cursor:pointer}
 
-  /* Empty */
   .empty{display:none; margin:18px 0; padding:20px; border-radius:18px; border:1px dashed var(--line); color:var(--muted); background:rgba(255,255,255,.06)}
-
   .hide{display:none!important}
 </style>
 </head>
@@ -131,8 +139,18 @@
 
 <header class="appbar">
   <div class="inner">
-    <div class="logo"><i>🛡️</i><div>Rotas • <b>Admin</b></div></div>
+    <div class="logo">
+      <span class="badge">
+        <img class="brand" src="https://wp.logos-download.com/wp-content/uploads/2024/09/Shopee_Express_Logo-3000x474.png" alt="Shopee Express">
+      </span>
+      <div>Rotas • <b>Admin</b></div>
+    </div>
     <div class="spacer"></div>
+
+    <button class="btn ghost small" id="btnShowPresent">
+      Disponíveis no galpão <span id="presentCount" class="badge">0</span>
+    </button>
+
     <button id="btnTheme" class="btn ghost small toggle" title="Alternar tema">🌙 Escuro</button>
     <button class="btn ghost small hide" id="btnLogout">Sair</button>
     <button class="btn hide" id="btnOpenModal">Nova rota</button>
@@ -159,6 +177,13 @@
     <h2>Rotas publicadas</h2>
     <div id="empty" class="empty">Nenhuma rota publicada ainda.</div>
     <div id="list"></div>
+
+    <!-- Presentes no galpão -->
+    <section id="presentSec" class="section">
+      <h2>Disponíveis no galpão <span class="muted" id="presentHint"></span></h2>
+      <div id="presentEmpty" class="empty">Ninguém se disponibilizou recentemente.</div>
+      <div id="presentList"></div>
+    </section>
   </section>
 </main>
 
@@ -231,7 +256,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ========= HELPERS ========= */
 const $ = s => document.querySelector(s);
 
-/* ----- Dialog system (promises) ----- */
+/* ----- Dialog system ----- */
 function openDialog({title, message, actions}) {
   return new Promise(resolve=>{
     const bd = $('#dialogBackdrop');
@@ -257,8 +282,9 @@ const modalConfirm = (title, msg, ok='Confirmar', cancel='Cancelar', danger=fals
   openDialog({title, message: msg, actions:[{label:cancel, value:false, variant:'btn-ghost'}, {label:ok, value:true, variant: danger?'btn-danger':'btn-primary'}]});
 
 /* ========= STATE ========= */
-let channel=null;
-let adminHash=null; // hash da senha válida
+let channelRoutes=null;
+let channelPresent=null;
+let adminHash=null;
 
 /* ========= LOGIN ========= */
 async function sha256(text){const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
@@ -310,14 +336,6 @@ document.getElementById('btnLogout').onclick = async ()=>{
   await modalAlert('Pronto','Sessão encerrada.');
 };
 
-/* ========= MODAL NOVA ROTA ========= */
-function openModal(){ if(!adminHash){modalAlert('Acesso','Faça login para divulgar.');return;} document.getElementById('backdrop').style.display='flex'; document.getElementById('cluster').focus(); }
-function closeModal(){ document.getElementById('backdrop').style.display='none'; }
-document.getElementById('btnOpenModal').onclick = openModal;
-document.getElementById('btnCloseModal').onclick = closeModal;
-document.getElementById('btnCancel').onclick = closeModal;
-document.getElementById('backdrop').addEventListener('click',e=>{ if(e.target.id==='backdrop') closeModal(); });
-
 /* ========= LISTA ========= */
 const fmtAllowed = arr => (arr||[]).join(', ');
 async function loadRoutes(){
@@ -366,7 +384,6 @@ async function renderRoutes(rows){
     container.appendChild(card);
   }
 
-  // binds
   container.querySelectorAll('.btn-action').forEach(btn=>{
     btn.onclick = async ()=>{
       if(!adminHash){ await modalAlert('Acesso','Faça login para executar.'); return; }
@@ -392,12 +409,12 @@ async function renderRoutes(rows){
   });
 }
 
-/* ========= CRIAR (RPC segura) ========= */
+/* ========= CRIAR ========= */
 document.getElementById('btnCreate').onclick = async ()=>{
   if(!adminHash){ await modalAlert('Acesso','Faça login para divulgar.'); return; }
   const cluster = document.getElementById('cluster').value.trim();
   const region  = document.getElementById('region').value.trim();
-  const veh = [...document.querySelectorAll('.veh:checked')].map(i=>i.value); // MOTO/FIORINO/PASSEIO
+  const veh = [...document.querySelectorAll('.veh:checked')].map(i=>i.value);
   if(!cluster || !region || !veh.length){ await modalAlert('Campos obrigatórios','Preencha rota, região e tipos permitidos.'); return; }
 
   const { data, error } = await sb.rpc('admin_create_route', {
@@ -411,14 +428,67 @@ document.getElementById('btnCreate').onclick = async ()=>{
   await modalAlert('Publicado', (data && data[0]?.message) || 'Rota divulgada.');
 };
 
+/* ========= PRESENTES (via RPC get_present_drivers) ========= */
+const PRESENT_WINDOW_MIN = 120;
+
+async function fetchPresent(){
+  const { data, error } = await sb.rpc('get_present_drivers');
+  if(error){ console.error(error); return []; }
+  const seen = new Set(); const latest=[];
+  for(const r of data){ if(!seen.has(r.driver_id)){ seen.add(r.driver_id); latest.push(r); } }
+  return latest;
+}
+function fmtTime(ts){ try{ return new Date(ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); } catch(_){ return ''; } }
+async function renderPresent(){
+  const listEl  = document.getElementById('presentList');
+  const emptyEl = document.getElementById('presentEmpty');
+  const hintEl  = document.getElementById('presentHint');
+  listEl.innerHTML = '';
+
+  const rows = await fetchPresent();
+  document.getElementById('presentCount').textContent = String(rows.length);
+  hintEl.textContent = rows.length ? `• últimos ${PRESENT_WINDOW_MIN} min` : '';
+
+  if(!rows.length){ emptyEl.style.display='block'; return; }
+  emptyEl.style.display='none';
+
+  for(const r of rows){
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `
+      <div class="row" style="grid-template-columns: 1.4fr .8fr .6fr;">
+        <div class="route">
+          <div class="title">[${r.driver_id}] ${r.name || ''}</div>
+          <div class="subtitle">${r.vehicle ? ('Veículo: ' + r.vehicle) : ''}</div>
+        </div>
+        <div class="muted">Último registro: ${fmtTime(r.created_at)}</div>
+        <div></div>
+      </div>
+    `;
+    listEl.appendChild(card);
+  }
+}
+document.getElementById('btnShowPresent').onclick = renderPresent;
+
 /* ========= REALTIME ========= */
-async function subRealtime(){
-  if(channel) sb.removeChannel(channel);
-  channel = sb.channel('routes-admin')
+async function subRealtimeRoutes(){
+  if(channelRoutes) sb.removeChannel(channelRoutes);
+  channelRoutes = sb.channel('routes-admin')
     .on('postgres_changes',{event:'*',schema:'public',table:'routes'}, async ()=>{ renderRoutes(await loadRoutes()); })
     .subscribe();
 }
-async function initPanel(){ renderRoutes(await loadRoutes()); await subRealtime(); }
+async function subRealtimePresent(){
+  if(channelPresent) sb.removeChannel(channelPresent);
+  channelPresent = sb.channel('present-admin')
+    .on('postgres_changes',{event:'*',schema:'public',table:'present_drivers'}, renderPresent)
+    .subscribe();
+}
+
+async function initPanel(){
+  renderRoutes(await loadRoutes());
+  await subRealtimeRoutes();
+  await renderPresent();
+  await subRealtimePresent();
+}
 </script>
 </body>
 </html>
