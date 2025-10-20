@@ -46,7 +46,7 @@
   .appbar{position:sticky; top:0; z-index:30; background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:var(--header-shadow)}
   .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px}
 
-  /* LOGO: badge branco + imagem responsiva */
+  /* LOGO */
   .logo{display:flex; align-items:center; gap:12px; font-weight:900}
   .logo .badge{
     display:flex; align-items:center; justify-content:center;
@@ -424,7 +424,7 @@ document.getElementById('btnCreate').onclick = async ()=>{
 
   document.getElementById('cluster').value=''; document.getElementById('region').value='';
   document.querySelectorAll('.veh').forEach(c=>c.checked=true);
-  closeModal();
+  document.getElementById('backdrop').style.display='none';
   await modalAlert('Publicado', (data && data[0]?.message) || 'Rota divulgada.');
 };
 
