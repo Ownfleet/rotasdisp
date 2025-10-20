@@ -46,7 +46,7 @@
   .appbar{position:sticky; top:0; z-index:30; background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:var(--header-shadow)}
   .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px}
 
-  /* LOGO: badge branco + imagem responsiva */
+  /* LOGO: badge + imagem responsiva */
   .logo{display:flex; align-items:center; gap:12px; font-weight:900}
   .logo .badge{
     display:flex; align-items:center; justify-content:center;
@@ -109,7 +109,7 @@
   .btn-action:disabled{opacity:.55; filter:grayscale(.15); cursor:not-allowed; box-shadow:none}
 
   /* Modais */
-  .backdrop{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:40; background:rgba(5,10,25,.55); backdrop-filter: blur(8px)}
+  .backdrop{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:80; background:rgba(5,10,25,.55); backdrop-filter: blur(8px)}
   .modal{width:min(720px, 92vw); background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow-lg); overflow:hidden; animation:pop .16s ease}
   @keyframes pop{from{transform:translateY(8px); opacity:0} to{transform:none; opacity:1}}
   .modal .head{background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65)); padding:16px 18px; display:flex; align-items:center; justify-content:space-between}
@@ -336,6 +336,26 @@ document.getElementById('btnLogout').onclick = async ()=>{
   await modalAlert('Pronto','Sessão encerrada.');
 };
 
+/* ========= MODAL NOVA ROTA (bind robusto) ========= */
+function openModal(){
+  if(!adminHash){ modalAlert('Acesso','Faça login para divulgar.'); return; }
+  document.getElementById('backdrop').style.display='flex';
+  document.getElementById('cluster').focus();
+}
+function closeModal(){ document.getElementById('backdrop').style.display='none'; }
+
+// binds defensivos (evitam perder o clique)
+(function bindModalButtons(){
+  const btnOpen = document.getElementById('btnOpenModal');
+  if(btnOpen) btnOpen.addEventListener('click', e=>{ e.preventDefault(); openModal(); });
+  const btnClose = document.getElementById('btnCloseModal');
+  if(btnClose) btnClose.onclick = closeModal;
+  const btnCancel = document.getElementById('btnCancel');
+  if(btnCancel) btnCancel.onclick = closeModal;
+  const bd = document.getElementById('backdrop');
+  if(bd) bd.addEventListener('click', e=>{ if(e.target.id==='backdrop') closeModal(); });
+})();
+
 /* ========= LISTA ========= */
 const fmtAllowed = arr => (arr||[]).join(', ');
 async function loadRoutes(){
@@ -469,26 +489,34 @@ async function renderPresent(){
 }
 document.getElementById('btnShowPresent').onclick = renderPresent;
 
-/* ========= REALTIME ========= */
+/* ========= REALTIME (robusto) ========= */
 async function subRealtimeRoutes(){
   if(channelRoutes) sb.removeChannel(channelRoutes);
-  channelRoutes = sb.channel('routes-admin')
-    .on('postgres_changes',{event:'*',schema:'public',table:'routes'}, async ()=>{ renderRoutes(await loadRoutes()); })
-    .subscribe();
+  channelRoutes = sb.channel('routes-admin', {
+    config:{ broadcast:{ack:true}, postgres_changes:{ include_old_record:true } }
+  })
+  .on('postgres_changes',{event:'*',schema:'public',table:'routes'}, async ()=>{
+    renderRoutes(await loadRoutes());
+  })
+  .subscribe();
 }
 async function subRealtimePresent(){
   if(channelPresent) sb.removeChannel(channelPresent);
-  channelPresent = sb.channel('present-admin')
-    .on('postgres_changes',{event:'*',schema:'public',table:'present_drivers'}, renderPresent)
-    .subscribe();
+  channelPresent = sb.channel('present-admin', {
+    config:{ broadcast:{ack:true}, postgres_changes:{ include_old_record:true } }
+  })
+  .on('postgres_changes',{event:'*',schema:'public',table:'present_drivers'}, ()=>{
+    renderPresent();
+  })
+  .subscribe();
 }
 
 async function initPanel(){
   renderRoutes(await loadRoutes());
-  await subRealtimeRoutes();
   await renderPresent();
+  await subRealtimeRoutes();
   await subRealtimePresent();
 }
 </script>
 </body>
-</html>  
+</html>
