@@ -42,11 +42,9 @@
       var(--bg);
   }
 
-  /* Appbar */
   .appbar{position:sticky; top:0; z-index:30; background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:var(--header-shadow)}
   .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px}
 
-  /* LOGO: badge + imagem responsiva */
   .logo{display:flex; align-items:center; gap:12px; font-weight:900}
   .logo .badge{
     display:flex; align-items:center; justify-content:center;
@@ -69,7 +67,6 @@
 
   .wrap{max-width:1200px; margin:26px auto; padding:0 20px}
 
-  /* Login */
   .login{
     background:var(--card); border:1px solid var(--line); border-radius:22px;
     padding:18px; box-shadow:var(--shadow-lg); max-width:560px; margin:28px auto;
@@ -81,7 +78,6 @@
   input:focus{box-shadow:0 0 0 3px rgba(255,90,42,.18); border-color:rgba(255,90,42,.45)}
   .hint{margin-top:8px; color:var(--muted)}
 
-  /* Section + Cards */
   .section h2{margin:0 0 14px; font-size:22px}
   .card{
     position:relative; isolation:isolate;
@@ -95,7 +91,6 @@
   .subtitle{color:var(--muted)}
   .muted{color:var(--muted)}
 
-  /* Pills & actions */
   .pill{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:900; font-size:12px; border:1px solid}
   .pill.ok{background:var(--pill-ok-bg); border-color:var(--pill-ok-bd); color:var(--pill-ok-tx)}
   .pill.warn{background:var(--pill-warn-bg); border-color:var(--pill-warn-bd); color:var(--pill-warn-tx)}
@@ -108,7 +103,6 @@
   [data-theme="dark"] .btn-action.danger{background:linear-gradient(rgba(255,255,255,.07),rgba(255,255,255,.05)); color:#ffb3b3}
   .btn-action:disabled{opacity:.55; filter:grayscale(.15); cursor:not-allowed; box-shadow:none}
 
-  /* Modais */
   .backdrop{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:80; background:rgba(5,10,25,.55); backdrop-filter: blur(8px)}
   .modal{width:min(720px, 92vw); background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow-lg); overflow:hidden; animation:pop .16s ease}
   @keyframes pop{from{transform:translateY(8px); opacity:0} to{transform:none; opacity:1}}
@@ -121,7 +115,6 @@
   .check{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff}
   [data-theme="dark"] .check{background:rgba(255,255,255,.06); color:var(--ink)}
 
-  /* Dialog */
   .dialog{width:min(520px,90vw); background:var(--modal-surface); border:1px solid var(--modal-line); border-radius:20px; box-shadow:var(--shadow-lg); overflow:hidden; animation:pop .14s ease}
   .dialog .h{padding:14px 16px; font-weight:900; border-bottom:1px solid var(--modal-line)}
   .dialog .c{padding:16px}
@@ -151,6 +144,11 @@
       Disponíveis no galpão <span id="presentCount" class="badge">0</span>
     </button>
 
+    <!-- >>> ADICIONADO <<< -->
+    <button class="btn ghost small" id="btnClearPresent">
+      Limpar disponíveis
+    </button>
+
     <button id="btnTheme" class="btn ghost small toggle" title="Alternar tema">🌙 Escuro</button>
     <button class="btn ghost small hide" id="btnLogout">Sair</button>
     <button class="btn hide" id="btnOpenModal">Nova rota</button>
@@ -178,7 +176,6 @@
     <div id="empty" class="empty">Nenhuma rota publicada ainda.</div>
     <div id="list"></div>
 
-    <!-- Presentes no galpão -->
     <section id="presentSec" class="section">
       <h2>Disponíveis no galpão <span class="muted" id="presentHint"></span></h2>
       <div id="presentEmpty" class="empty">Ninguém se disponibilizou recentemente.</div>
@@ -221,7 +218,6 @@
   </div>
 </div>
 
-<!-- Dialog genérico -->
 <div class="backdrop" id="dialogBackdrop">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
     <div class="h" id="dlgTitle">Título</div>
@@ -336,15 +332,13 @@ document.getElementById('btnLogout').onclick = async ()=>{
   await modalAlert('Pronto','Sessão encerrada.');
 };
 
-/* ========= MODAL NOVA ROTA (bind robusto) ========= */
+/* ========= MODAL NOVA ROTA ========= */
 function openModal(){
   if(!adminHash){ modalAlert('Acesso','Faça login para divulgar.'); return; }
   document.getElementById('backdrop').style.display='flex';
   document.getElementById('cluster').focus();
 }
 function closeModal(){ document.getElementById('backdrop').style.display='none'; }
-
-// binds defensivos (evitam perder o clique)
 (function bindModalButtons(){
   const btnOpen = document.getElementById('btnOpenModal');
   if(btnOpen) btnOpen.addEventListener('click', e=>{ e.preventDefault(); openModal(); });
@@ -374,10 +368,8 @@ async function renderRoutes(rows){
   const container = document.getElementById('list');
   const empty = document.getElementById('empty');
   container.innerHTML='';
-
   if(!rows.length){ empty.style.display='block'; return; }
   empty.style.display='none';
-
   for(const r of rows){
     const claimed = !!r.claimed_driver_id;
     const who = claimed ? `[${r.claimed_driver_id}] ${await resolveDriverName(r.claimed_driver_id)}` : '';
@@ -403,13 +395,11 @@ async function renderRoutes(rows){
     `;
     container.appendChild(card);
   }
-
   container.querySelectorAll('.btn-action').forEach(btn=>{
     btn.onclick = async ()=>{
       if(!adminHash){ await modalAlert('Acesso','Faça login para executar.'); return; }
       const id = Number(btn.dataset.id);
       const act = btn.dataset.action;
-
       if(act==='open'){
         const ok = await modalConfirm('Abrir rota', 'Deseja reabrir esta rota e torná-la disponível novamente?', 'Abrir', 'Cancelar');
         if(!ok) return;
@@ -417,7 +407,6 @@ async function renderRoutes(rows){
         if(error){ await modalAlert('Erro', error.message || 'Falha ao abrir.'); return; }
         await modalAlert('Sucesso', (data && data[0]?.message) || 'Rota aberta.');
       }
-
       if(act==='delete'){
         const ok = await modalConfirm('Excluir rota', 'Tem certeza que deseja excluir esta rota?', 'Excluir', 'Cancelar', true);
         if(!ok) return;
@@ -436,21 +425,18 @@ document.getElementById('btnCreate').onclick = async ()=>{
   const region  = document.getElementById('region').value.trim();
   const veh = [...document.querySelectorAll('.veh:checked')].map(i=>i.value);
   if(!cluster || !region || !veh.length){ await modalAlert('Campos obrigatórios','Preencha rota, região e tipos permitidos.'); return; }
-
   const { data, error } = await sb.rpc('admin_create_route', {
     p_cluster: cluster, p_region: region, p_vehicle: veh, p_passhash: adminHash
   });
   if(error){ await modalAlert('Erro', error.message || 'Falha ao divulgar.'); return; }
-
   document.getElementById('cluster').value=''; document.getElementById('region').value='';
   document.querySelectorAll('.veh').forEach(c=>c.checked=true);
   closeModal();
   await modalAlert('Publicado', (data && data[0]?.message) || 'Rota divulgada.');
 };
 
-/* ========= PRESENTES (via RPC get_present_drivers) ========= */
+/* ========= PRESENTES ========= */
 const PRESENT_WINDOW_MIN = 120;
-
 async function fetchPresent(){
   const { data, error } = await sb.rpc('get_present_drivers');
   if(error){ console.error(error); return []; }
@@ -464,14 +450,11 @@ async function renderPresent(){
   const emptyEl = document.getElementById('presentEmpty');
   const hintEl  = document.getElementById('presentHint');
   listEl.innerHTML = '';
-
   const rows = await fetchPresent();
   document.getElementById('presentCount').textContent = String(rows.length);
   hintEl.textContent = rows.length ? `• últimos ${PRESENT_WINDOW_MIN} min` : '';
-
   if(!rows.length){ emptyEl.style.display='block'; return; }
   emptyEl.style.display='none';
-
   for(const r of rows){
     const card = document.createElement('div'); card.className='card';
     card.innerHTML = `
@@ -489,7 +472,34 @@ async function renderPresent(){
 }
 document.getElementById('btnShowPresent').onclick = renderPresent;
 
-/* ========= REALTIME (robusto) ========= */
+/* >>> ADICIONADO <<< */
+/* ========= LIMPAR DISPONÍVEIS (SEM NOVA SENHA) ========= */
+const btnClearPresent = document.getElementById('btnClearPresent');
+if (btnClearPresent) {
+  btnClearPresent.onclick = async ()=>{
+    if(!adminHash){
+      await modalAlert('Acesso','Faça login para executar.');
+      return;
+    }
+    const ok = await modalConfirm(
+      'Limpar disponíveis',
+      'Isso irá remover TODOS os motoristas disponíveis no galpão. Deseja continuar?',
+      'Limpar',
+      'Cancelar',
+      true
+    );
+    if(!ok) return;
+    const { error } = await sb.rpc('clear_present_drivers');
+    if(error){
+      await modalAlert('Erro', error.message || 'Erro ao limpar disponíveis.');
+      return;
+    }
+    await modalAlert('Concluído','Lista de disponíveis limpa com sucesso.');
+    await renderPresent();
+  };
+}
+
+/* ========= REALTIME ========= */
 async function subRealtimeRoutes(){
   if(channelRoutes) sb.removeChannel(channelRoutes);
   channelRoutes = sb.channel('routes-admin', {
@@ -510,7 +520,6 @@ async function subRealtimePresent(){
   })
   .subscribe();
 }
-
 async function initPanel(){
   renderRoutes(await loadRoutes());
   await renderPresent();
