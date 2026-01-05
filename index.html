@@ -43,7 +43,7 @@
   }
 
   .appbar{position:sticky; top:0; z-index:30; background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:var(--header-shadow)}
-  .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px}
+  .appbar .inner{max-width:1200px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
 
   .logo{display:flex; align-items:center; gap:12px; font-weight:900}
   .logo .badge{
@@ -73,9 +73,15 @@
     backdrop-filter: blur(12px);
   }
   label{font-size:13px; color:var(--muted); display:block; margin-bottom:6px}
-  input[type=password]{width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.9); outline:none}
-  [data-theme="dark"] input[type=password]{background:rgba(255,255,255,.06); color:var(--ink)}
-  input:focus{box-shadow:0 0 0 3px rgba(255,90,42,.18); border-color:rgba(255,90,42,.45)}
+
+  input[type=password], input[type=text], select{
+    width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:14px;
+    background:rgba(255,255,255,.9); outline:none;
+  }
+  [data-theme="dark"] input[type=password],
+  [data-theme="dark"] input[type=text],
+  [data-theme="dark"] select{background:rgba(255,255,255,.06); color:var(--ink)}
+  input:focus, select:focus{box-shadow:0 0 0 3px rgba(255,90,42,.18); border-color:rgba(255,90,42,.45)}
   .hint{margin-top:8px; color:var(--muted)}
 
   .section h2{margin:0 0 14px; font-size:22px}
@@ -126,6 +132,12 @@
 
   .empty{display:none; margin:18px 0; padding:20px; border-radius:18px; border:1px dashed var(--line); color:var(--muted); background:rgba(255,255,255,.06)}
   .hide{display:none!important}
+
+  /* ✅ FIX: ordem de camadas (dialog sempre acima) */
+  #backdrop{ z-index:1500 !important; }
+  #driversBackdrop{ z-index:2000 !important; }
+  #driverBackdrop{ z-index:2100 !important; }
+  #dialogBackdrop{ z-index:9999 !important; }
 </style>
 </head>
 <body>
@@ -144,10 +156,9 @@
       Disponíveis no galpão <span id="presentCount" class="badge">0</span>
     </button>
 
-    <!-- >>> ADICIONADO <<< -->
-    <button class="btn ghost small" id="btnClearPresent">
-      Limpar disponíveis
-    </button>
+    <button class="btn ghost small" id="btnClearPresent">Limpar disponíveis</button>
+
+    <button class="btn ghost small" id="btnShowDrivers">Motoristas</button>
 
     <button id="btnTheme" class="btn ghost small toggle" title="Alternar tema">🌙 Escuro</button>
     <button class="btn ghost small hide" id="btnLogout">Sair</button>
@@ -156,7 +167,6 @@
 </header>
 
 <main class="wrap">
-  <!-- Login -->
   <section id="loginBox" class="login">
     <h3 style="margin:0 0 10px">Acesso restrito</h3>
     <label for="adminPass">Senha</label>
@@ -170,7 +180,6 @@
     </div>
   </section>
 
-  <!-- Painel -->
   <section id="panel" class="section hide">
     <h2>Rotas publicadas</h2>
     <div id="empty" class="empty">Nenhuma rota publicada ainda.</div>
@@ -218,11 +227,78 @@
   </div>
 </div>
 
+<!-- Dialog (alert/confirm) -->
 <div class="backdrop" id="dialogBackdrop">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
     <div class="h" id="dlgTitle">Título</div>
     <div class="c" id="dlgContent">Mensagem</div>
     <div class="f" id="dlgActions"></div>
+  </div>
+</div>
+
+<!-- Modal Motoristas -->
+<div class="backdrop" id="driversBackdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="driversTitle">
+    <div class="head">
+      <h3 id="driversTitle" style="margin:0">Motoristas</h3>
+      <button class="btn ghost small" id="btnCloseDrivers" title="Fechar">✕</button>
+    </div>
+
+    <div class="body">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+        <input id="driversQuery" type="text" placeholder="Pesquisar por ID ou nome..." style="flex:1; min-width:240px">
+        <button class="btn" id="btnSearchDrivers">Pesquisar</button>
+        <button class="btn ghost" id="btnNewDriverTop">Adicionar</button>
+      </div>
+
+      <div class="hint" id="driversHint" style="margin-top:10px">
+        Digite um ID ou nome e clique em Pesquisar.
+      </div>
+
+      <div id="driversSearchEmpty" class="empty">Nenhum motorista encontrado.</div>
+      <div id="driversSearchList" style="margin-top:12px"></div>
+    </div>
+
+    <div class="foot">
+      <button class="btn ghost" id="btnCloseDrivers2">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Adicionar Motorista -->
+<div class="backdrop" id="driverBackdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="driverModalTitle">
+    <div class="head">
+      <h3 id="driverModalTitle" style="margin:0">Adicionar motorista</h3>
+      <button class="btn ghost small" id="btnCloseDriver" title="Fechar">✕</button>
+    </div>
+    <div class="body">
+      <div class="row" style="grid-template-columns:1fr 1fr; gap:14px">
+        <div>
+          <label for="d_id">Driver ID</label>
+          <input id="d_id" type="text" placeholder="ex.: 2342923">
+        </div>
+        <div>
+          <label for="d_vehicle">Veículo</label>
+          <!-- ✅ VAN removida -->
+          <select id="d_vehicle">
+            <option value="" selected disabled>Selecione...</option>
+            <option value="MOTO">MOTO</option>
+            <option value="FIORINO">FIORINO</option>
+            <option value="PASSEIO">PASSEIO</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <label for="d_name">Nome</label>
+        <input id="d_name" type="text" placeholder="Nome completo">
+      </div>
+      <div class="hint" id="driverModalHint" style="margin-top:10px"></div>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" id="btnCancelDriver">Cancelar</button>
+      <button class="btn" id="btnSaveDriver">Salvar</button>
+    </div>
   </div>
 </div>
 
@@ -283,7 +359,10 @@ let channelPresent=null;
 let adminHash=null;
 
 /* ========= LOGIN ========= */
-async function sha256(text){const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function sha256(text){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 async function checkPassword(pass){
   const hash = await sha256(pass);
   const { data, error } = await sb.from('config').select('admin_pass').eq('id',1).single();
@@ -314,14 +393,19 @@ $('#btnLogin').onclick = async ()=>{
   const ok = await checkPassword(p);
   if(ok){
     setLoggedUI(true);
-    if(remember){ localStorage.setItem('admin_access','ok'); localStorage.setItem('admin_hash', adminHash); }
+    if(remember){
+      localStorage.setItem('admin_access','ok');
+      localStorage.setItem('admin_hash', adminHash);
+    }
     await modalAlert('Bem-vindo 👋','Acesso concedido.');
     await initPanel();
   } else {
     await modalAlert('Erro','Senha incorreta.');
   }
 };
-document.getElementById('adminPass').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('btnLogin').click(); });
+document.getElementById('adminPass').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('btnLogin').click();
+});
 
 document.getElementById('btnLogout').onclick = async ()=>{
   const sure = await modalConfirm('Sair', 'Deseja encerrar a sessão?', 'Sair', 'Cancelar', true);
@@ -350,7 +434,7 @@ function closeModal(){ document.getElementById('backdrop').style.display='none';
   if(bd) bd.addEventListener('click', e=>{ if(e.target.id==='backdrop') closeModal(); });
 })();
 
-/* ========= LISTA ========= */
+/* ========= LISTA (ROTAS) ========= */
 const fmtAllowed = arr => (arr||[]).join(', ');
 async function loadRoutes(){
   const { data, error } = await sb.from('routes')
@@ -418,13 +502,16 @@ async function renderRoutes(rows){
   });
 }
 
-/* ========= CRIAR ========= */
+/* ========= CRIAR ROTA ========= */
 document.getElementById('btnCreate').onclick = async ()=>{
   if(!adminHash){ await modalAlert('Acesso','Faça login para divulgar.'); return; }
   const cluster = document.getElementById('cluster').value.trim();
   const region  = document.getElementById('region').value.trim();
   const veh = [...document.querySelectorAll('.veh:checked')].map(i=>i.value);
-  if(!cluster || !region || !veh.length){ await modalAlert('Campos obrigatórios','Preencha rota, região e tipos permitidos.'); return; }
+  if(!cluster || !region || !veh.length){
+    await modalAlert('Campos obrigatórios','Preencha rota, região e tipos permitidos.');
+    return;
+  }
   const { data, error } = await sb.rpc('admin_create_route', {
     p_cluster: cluster, p_region: region, p_vehicle: veh, p_passhash: adminHash
   });
@@ -444,7 +531,10 @@ async function fetchPresent(){
   for(const r of data){ if(!seen.has(r.driver_id)){ seen.add(r.driver_id); latest.push(r); } }
   return latest;
 }
-function fmtTime(ts){ try{ return new Date(ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); } catch(_){ return ''; } }
+function fmtTime(ts){
+  try{ return new Date(ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+  catch(_){ return ''; }
+}
 async function renderPresent(){
   const listEl  = document.getElementById('presentList');
   const emptyEl = document.getElementById('presentEmpty');
@@ -472,8 +562,7 @@ async function renderPresent(){
 }
 document.getElementById('btnShowPresent').onclick = renderPresent;
 
-/* >>> ADICIONADO <<< */
-/* ========= LIMPAR DISPONÍVEIS (SEM NOVA SENHA) ========= */
+/* ========= LIMPAR DISPONÍVEIS ========= */
 const btnClearPresent = document.getElementById('btnClearPresent');
 if (btnClearPresent) {
   btnClearPresent.onclick = async ()=>{
@@ -499,6 +588,217 @@ if (btnClearPresent) {
   };
 }
 
+/* ========= MOTORISTAS (MODAL + PESQUISA) ========= */
+let driversCache = [];
+
+function openDriversModal(){
+  if(!adminHash){ modalAlert('Acesso','Faça login para executar.'); return; }
+  $('#driversBackdrop').style.display = 'flex';
+  $('#driversQuery').focus();
+
+  $('#driversHint').textContent = 'Digite um ID ou nome e clique em Pesquisar.';
+  $('#driversSearchList').innerHTML = '';
+  $('#driversSearchEmpty').style.display = 'none';
+}
+function closeDriversModal(){
+  $('#driversBackdrop').style.display = 'none';
+}
+
+$('#btnShowDrivers').onclick = openDriversModal;
+$('#btnCloseDrivers').onclick = closeDriversModal;
+$('#btnCloseDrivers2').onclick = closeDriversModal;
+$('#driversBackdrop').addEventListener('click', (e)=>{ if(e.target.id==='driversBackdrop') closeDriversModal(); });
+
+function openDriverModal(){
+  if(!adminHash){ modalAlert('Acesso','Faça login para executar.'); return; }
+  document.getElementById('driverModalTitle').textContent = 'Adicionar motorista';
+  document.getElementById('driverModalHint').textContent = 'Obs: se o Driver ID já existir, ele será atualizado e ficará ativo.';
+  document.getElementById('d_id').disabled = false;
+  document.getElementById('d_id').value='';
+  document.getElementById('d_name').value='';
+  document.getElementById('d_vehicle').value='';
+  document.getElementById('driverBackdrop').style.display='flex';
+  document.getElementById('d_id').focus();
+}
+function closeDriverModal(){
+  document.getElementById('driverBackdrop').style.display='none';
+}
+
+document.getElementById('btnNewDriverTop').onclick = ()=>{
+  closeDriversModal();
+  openDriverModal();
+};
+document.getElementById('btnCloseDriver').onclick = closeDriverModal;
+document.getElementById('btnCancelDriver').onclick = closeDriverModal;
+document.getElementById('driverBackdrop').addEventListener('click', (e)=>{ if(e.target.id==='driverBackdrop') closeDriverModal(); });
+
+function isNumericOnly(s){ return /^[0-9]+$/.test(s); }
+
+async function searchDrivers(query){
+  query = (query || '').trim();
+  if(!query) return [];
+
+  const base = sb.from('drivers')
+    .select('driver_id,name,vehicle,active,created_at')
+    .limit(30)
+    .order('name',{ascending:true});
+
+  if(isNumericOnly(query)){
+    const { data, error } = await base.eq('driver_id', query);
+    if(error){ console.error(error); return []; }
+    return data || [];
+  } else {
+    const q = query.replace(/[%_]/g,'');
+    const { data, error } = await base.or(`name.ilike.%${q}%,driver_id.ilike.%${q}%`);
+    if(error){ console.error(error); return []; }
+    return data || [];
+  }
+}
+
+function renderDriversSearch(list){
+  const el = document.getElementById('driversSearchList');
+  const empty = document.getElementById('driversSearchEmpty');
+  el.innerHTML = '';
+
+  if(!list.length){
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+
+  for(const d of list){
+    const active = d.active !== false;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="row" style="grid-template-columns:1.4fr .7fr 1fr;">
+        <div class="route">
+          <div class="title">[${d.driver_id}] ${d.name || ''}</div>
+          <div class="subtitle">${d.vehicle ? ('Veículo: '+d.vehicle) : ''}</div>
+        </div>
+
+        <div>
+          ${active ? `<span class="pill ok">Ativo</span>` : `<span class="pill warn">Desativado</span>`}
+        </div>
+
+        <div class="actions">
+          <button class="btn-action" data-act="toggle" data-id="${d.driver_id}">
+            ${active ? 'Desativar' : 'Ativar'}
+          </button>
+          <button class="btn-action danger" data-act="del" data-id="${d.driver_id}">
+            Excluir
+          </button>
+        </div>
+      </div>
+    `;
+    el.appendChild(card);
+  }
+
+  el.querySelectorAll('button[data-act]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      if(!adminHash){ await modalAlert('Acesso','Faça login para executar.'); return; }
+
+      const id = String(btn.dataset.id);
+      const act = btn.dataset.act;
+      const row = driversCache.find(x=>String(x.driver_id)===id);
+      const isActive = row?.active !== false;
+
+      if(act==='toggle'){
+        const next = !isActive;
+        const ok = await modalConfirm(
+          next ? 'Ativar motorista' : 'Desativar motorista',
+          `Deseja ${next ? 'ATIVAR' : 'DESATIVAR'} o motorista [${id}] ${row?.name || ''}?`,
+          next ? 'Ativar' : 'Desativar',
+          'Cancelar',
+          !next
+        );
+        if(!ok) return;
+
+        const { data, error } = await sb.rpc('admin_set_driver_active', {
+          p_driver_id: id,
+          p_active: next,
+          p_passhash: adminHash
+        });
+        if(error){ await modalAlert('Erro', error.message || 'Falha ao alterar status.'); return; }
+        await modalAlert('OK', (data && data[0]?.message) || 'Atualizado.');
+        await runDriversSearch();
+      }
+
+      if(act==='del'){
+        const ok = await modalConfirm(
+          'Excluir motorista',
+          `Tem certeza que deseja EXCLUIR [${id}] ${row?.name || ''}?<br><br><b>Dica:</b> se quiser só impedir uso, use "Desativar".`,
+          'Excluir',
+          'Cancelar',
+          true
+        );
+        if(!ok) return;
+
+        const { data, error } = await sb.rpc('admin_delete_driver', {
+          p_driver_id: id,
+          p_passhash: adminHash
+        });
+        if(error){ await modalAlert('Erro', error.message || 'Falha ao excluir.'); return; }
+        await modalAlert('OK', (data && data[0]?.message) || 'Excluído.');
+        await runDriversSearch();
+      }
+    };
+  });
+}
+
+async function runDriversSearch(){
+  const q = $('#driversQuery').value.trim();
+  if(!q){
+    $('#driversHint').textContent = 'Digite um ID ou nome e clique em Pesquisar.';
+    $('#driversSearchList').innerHTML = '';
+    $('#driversSearchEmpty').style.display = 'none';
+    return;
+  }
+  $('#driversHint').textContent = 'Pesquisando...';
+  driversCache = await searchDrivers(q);
+
+  $('#driversHint').textContent = driversCache.length
+    ? `Mostrando ${driversCache.length} resultado(s) (máx. 30).`
+    : 'Nenhum resultado.';
+  renderDriversSearch(driversCache);
+}
+
+$('#btnSearchDrivers').onclick = runDriversSearch;
+$('#driversQuery').addEventListener('keydown', (e)=>{ if(e.key==='Enter') runDriversSearch(); });
+
+/* SALVAR MOTORISTA */
+document.getElementById('btnSaveDriver').onclick = async ()=>{
+  if(!adminHash){ await modalAlert('Acesso','Faça login para executar.'); return; }
+
+  const id = document.getElementById('d_id').value.trim();
+  const name = document.getElementById('d_name').value.trim();
+  const vehicle = document.getElementById('d_vehicle').value;
+
+  if(!id || !name || !vehicle){
+    await modalAlert('Campos obrigatórios','Preencha Driver ID, Nome e Veículo.');
+    return;
+  }
+
+  const { data, error } = await sb.rpc('admin_create_driver', {
+    p_driver_id: String(id),
+    p_name: name,
+    p_vehicle: String(vehicle).toUpperCase(),
+    p_passhash: adminHash
+  });
+
+  if(error){
+    await modalAlert('Erro', error.message || 'Falha ao salvar motorista.');
+    return;
+  }
+
+  closeDriverModal();
+  await modalAlert('OK', (data && data[0]?.message) || 'Motorista salvo.');
+
+  $('#driversQuery').value = String(id);
+  openDriversModal();
+  await runDriversSearch();
+};
+
 /* ========= REALTIME ========= */
 async function subRealtimeRoutes(){
   if(channelRoutes) sb.removeChannel(channelRoutes);
@@ -520,6 +820,7 @@ async function subRealtimePresent(){
   })
   .subscribe();
 }
+
 async function initPanel(){
   renderRoutes(await loadRoutes());
   await renderPresent();
