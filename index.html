@@ -157,7 +157,6 @@
     </button>
 
     <button class="btn ghost small" id="btnClearPresent">Limpar disponíveis</button>
-
     <button class="btn ghost small" id="btnShowDrivers">Motoristas</button>
 
     <button id="btnTheme" class="btn ghost small toggle" title="Alternar tema">🌙 Escuro</button>
@@ -167,6 +166,7 @@
 </header>
 
 <main class="wrap">
+  <!-- Login -->
   <section id="loginBox" class="login">
     <h3 style="margin:0 0 10px">Acesso restrito</h3>
     <label for="adminPass">Senha</label>
@@ -180,6 +180,7 @@
     </div>
   </section>
 
+  <!-- Painel -->
   <section id="panel" class="section hide">
     <h2>Rotas publicadas</h2>
     <div id="empty" class="empty">Nenhuma rota publicada ainda.</div>
@@ -336,22 +337,38 @@ function openDialog({title, message, actions}) {
     t.textContent = title || '';
     c.innerHTML = message || '';
     f.innerHTML = '';
+
+    const cleanup = ()=>{
+      bd.style.display='none';
+      window.removeEventListener('keydown', onKey);
+    };
+
     actions.forEach(a=>{
       const b = document.createElement('button');
       b.textContent = a.label;
       b.className = a.variant || 'btn-primary';
-      b.onclick = ()=>{ bd.style.display='none'; resolve(a.value); };
+      b.onclick = ()=>{ cleanup(); resolve(a.value); };
       f.appendChild(b);
     });
+
     bd.style.display='flex';
-    const onKey = (e)=>{ if(e.key==='Escape'){ bd.style.display='none'; resolve(actions[0]?.value ?? null); window.removeEventListener('keydown', onKey); } };
+
+    const onKey = (e)=>{
+      if(e.key==='Escape'){
+        cleanup();
+        resolve(actions[0]?.value ?? null);
+      }
+    };
     window.addEventListener('keydown', onKey);
   });
 }
 const modalAlert = (title, msg, ok='OK') =>
   openDialog({title, message: msg, actions:[{label:ok, value:true, variant:'btn-primary'}]});
 const modalConfirm = (title, msg, ok='Confirmar', cancel='Cancelar', danger=false) =>
-  openDialog({title, message: msg, actions:[{label:cancel, value:false, variant:'btn-ghost'}, {label:ok, value:true, variant: danger?'btn-danger':'btn-primary'}]});
+  openDialog({title, message: msg, actions:[
+    {label:cancel, value:false, variant:'btn-ghost'},
+    {label:ok, value:true, variant: danger?'btn-danger':'btn-primary'}
+  ]});
 
 /* ========= STATE ========= */
 let channelRoutes=null;
